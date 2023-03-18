@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <getopt.h>
-#include "solver.hpp"
+#include "puzzle.hpp"
 
 int main(int argc, char **argv) {
 
@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
                 return 1;
             case '?':
                 std::cerr << "Unknown option -" << (char)optopt << "\n";
-                break;
+                return 1;
 
         }
 
@@ -31,11 +31,9 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    Solver solver = Solver();
+    Puzzle puzzle = Puzzle(filename);
 
-    solver.read_file(filename);
-
-    solver.print();
+    puzzle.print();
 
     return 0;
 
