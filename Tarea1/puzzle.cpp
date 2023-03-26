@@ -205,7 +205,7 @@ std::vector<uint32_t> Puzzle::get_domain(std::vector<uint32_t> d, std::vector<ui
     if(idx == s.size())
         return d;
 
-    for(uint32_t i = 1; (acc << i) < (1 << this->size); i++) {
+    for(uint32_t i = 1; (acc << i) < (uint32_t)(1 << this->size); i++) {
 
     }
 
