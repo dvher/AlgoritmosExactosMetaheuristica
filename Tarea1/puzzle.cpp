@@ -2,6 +2,7 @@
 #include <fstream>
 #include <numeric>
 #include <sstream>
+#include <cmath>
 #include "puzzle.hpp"
 
 Puzzle::Puzzle() {
@@ -41,10 +42,13 @@ void Puzzle::read_file(std::string filename) {
     }
 
     this->size = this->rows_constraints.size();
+    this->calculate_domains();
 
 }
 
 void Puzzle::print() {
+
+    std::cout << "Size: " << (int)this->size << "\n\n";
 
     std::cout << "Matrix:\n";
 
@@ -55,6 +59,14 @@ void Puzzle::print() {
     std::cout << "\nCols:\n";
 
     this->print(this->cols_constraints);
+
+    std::cout << "\nRow domains:\n";
+
+    this->print(this->rows_domain);
+
+    std::cout << "\nCols domains:\n";
+
+    this->print(this->cols_domain);
 
     std::cout << "\n";
 }
@@ -68,6 +80,8 @@ void Puzzle::fill_vector(std::vector<uint32_t> &v, std::string line, char dlm) {
         int val = std::stoi(s);
         v.push_back(val);
     }
+
+    v.shrink_to_fit();
 
 }
 
@@ -83,6 +97,8 @@ void Puzzle::fill_vector(std::vector<std::vector<uint32_t>> &v, std::string line
 
         v.push_back(numbers);
     }
+
+    v.shrink_to_fit();
 
 }
 
@@ -102,9 +118,9 @@ void Puzzle::check(std::vector<std::vector<uint32_t>> v) {
     const uint32_t MAX_SIZE = v.size();
 
     for(const auto &rw : v) {
-        uint32_t size = std::accumulate(rw.begin(), rw.end(), 0) + rw.size() - 1;
+        uint32_t size_vec = std::accumulate(rw.begin(), rw.end(), 0) + rw.size() - 1;
 
-        if(size > MAX_SIZE) {
+        if(size_vec > MAX_SIZE) {
             std::cerr << "Sum of squares exceeds maximum capacity\n";
             exit(1);
         }
@@ -129,24 +145,81 @@ std::vector<uint32_t> Puzzle::get_domain(std::vector<uint32_t> c) {
     std::vector<uint32_t> domain;
 
     if(c.size() == 1) {
-        uint32_t value = c.at(0);
-        uint32_t squares = this->value_to_squares(value);
 
-        while(squares < 1 << this->size) {
+        const uint32_t value = c.at(0);
+        uint32_t squares = this->value_to_squares(value);
+        const uint32_t max_value = (uint32_t)(1 << (int)this->size);
+
+        while(squares < max_value) {
             domain.push_back(squares);
             squares <<= 1;
         }
 
+        domain.shrink_to_fit();
         return domain;
     }
+
+    if(std::accumulate(c.begin(), c.end(), 0) + c.size() - 1 == this->size) {
+        uint32_t value = 0;
+
+        for(const auto &v : c) {
+
+            const uint32_t squares = this->value_to_squares(v);
+            value <<= (int)log2(squares) + 2;
+            value += squares;
+
+        }
+
+        domain.push_back(value);
+        domain.shrink_to_fit();
+
+        return domain;
+    }
+
+    std::vector<uint32_t> squares_vec(c.size());
+
+    for(uint32_t i = 0; i < c.size(); i++) {
+        squares_vec[i] = this->value_to_squares(c[i]);
+    }
+
+    squares_vec.shrink_to_fit();
+
+    uint32_t min_value = 0;
+
+    for(const auto &v : c) {
+
+        const uint32_t squares = this->value_to_squares(v);
+        min_value <<= (int)log2(squares) + 2;
+        min_value += squares;
+
+    }
+
+    domain.push_back(min_value);
 
     return domain;
 
 }
 
+std::vector<uint32_t> Puzzle::get_domain(std::vector<uint32_t> d, std::vector<uint32_t> s, uint16_t idx, uint16_t left_pos, uint32_t acc) {
+
+    if(idx == s.size())
+        return d;
+
+    for(uint32_t i = 1; (acc << i) < (1 << this->size); i++) {
+
+    }
+
+    return d;
+
+}
+
 void Puzzle::calculate_domains() {
 
+    for(const auto &c : this->cols_constraints)
+        this->cols_domain.push_back(this->get_domain(c));
 
+    for(const auto &r : this->rows_constraints)
+        this->rows_domain.push_back(this->get_domain(r));
 
 }
 

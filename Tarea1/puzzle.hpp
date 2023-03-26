@@ -24,6 +24,7 @@ class Puzzle {
         void calculate_domains();
         uint32_t value_to_squares(uint32_t v);
         std::vector<uint32_t> get_domain(std::vector<uint32_t> c);
+        std::vector<uint32_t> get_domain(std::vector<uint32_t> d, std::vector<uint32_t> s, uint16_t idx, uint16_t left_pos, uint32_t acc);
         std::vector<bool> bit_representation(uint32_t n);
 
     public:

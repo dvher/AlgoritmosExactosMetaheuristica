@@ -1,5 +1,5 @@
 CC=g++
-CPPFLAGS=-Wall -Wextra -Wshadow -g
+CPPFLAGS=-Wall -Wextra -Wshadow -g -O2
 CPPLIBS=
 SRCS=$(wildcard *.cpp)
 
