@@ -196,20 +196,70 @@ std::vector<uint32_t> Puzzle::get_domain(std::vector<uint32_t> c) {
 
     domain.push_back(min_value);
 
+    std::vector<uint32_t> new_domain = this->get_domain(domain, squares_vec, 0, this->size, 0);
+
+    domain.insert(domain.end(), new_domain.begin(), new_domain.end());
+
     return domain;
 
 }
 
-std::vector<uint32_t> Puzzle::get_domain(std::vector<uint32_t> d, std::vector<uint32_t> s, uint16_t idx, uint16_t left_pos, uint32_t acc) {
+std::vector<uint32_t> Puzzle::get_domain(std::vector<uint32_t> domain, std::vector<uint32_t> squares, uint16_t idx, uint16_t left_pos, uint32_t acc) {
 
-    if(idx == s.size())
-        return d;
+    if(idx == squares.size())
+        return domain;
 
-    for(uint32_t i = 1; (acc << i) < (uint32_t)(1 << this->size); i++) {
+    // Make this function use recursivity to get all possible bit combinations such as
+    // 0 0 0 0 0 1 1 0 1 1
+    // 0 0 0 0 1 1 0 0 1 1
+    // 0 0 0 0 1 1 0 1 1 0
+    // 0 0 0 1 1 0 0 0 1 1
+    // 0 0 0 1 1 0 0 1 1 0
+    // 0 0 0 1 1 0 1 1 0 0
+    // 0 0 1 1 0 0 0 0 1 1
+    // 0 0 1 1 0 0 0 1 1 0
+    // 0 0 1 1 0 0 1 1 0 0
+    // 0 0 1 1 0 1 1 0 0 0
+    // 0 1 1 0 0 0 0 0 1 1
+    // 0 1 1 0 0 0 0 1 1 0
+    // 0 1 1 0 0 0 1 1 0 0
+    // 0 1 1 0 0 1 1 0 0 0
+    // 0 1 1 0 1 1 0 0 0 0
+    // 1 1 0 0 0 0 0 0 1 1
+    // 1 1 0 0 0 0 0 1 1 0
+    // 1 1 0 0 0 0 1 1 0 0
+    // 1 1 0 0 0 1 1 0 0 0
+    // 1 1 0 0 1 1 0 0 0 0
+    // 1 1 0 1 1 0 0 0 0 0
 
+    const uint32_t squares_value = squares[idx];
+    const uint16_t squares_size = log2(squares_value) + 1;
+
+    const uint32_t max_value = (uint32_t)(1 << (int)this->size);
+
+    uint32_t value = 0;
+
+    for(uint16_t i = 0; i < squares_size; i++) {
+        value <<= 2;
+        value += 1;
     }
 
-    return d;
+    if(left_pos < squares_size)
+        return domain;
+
+    uint32_t curr_value = (acc << (int)squares_size) + value;
+
+    if(curr_value < max_value) {
+        domain.push_back(curr_value);
+        domain = this->get_domain(domain, squares, idx + 1, left_pos - squares_size, curr_value);
+    }
+
+    if(left_pos > squares_size) {
+        domain = this->get_domain(domain, squares, idx, left_pos - 1, acc);
+    }
+
+    return domain;
+
 
 }
 
