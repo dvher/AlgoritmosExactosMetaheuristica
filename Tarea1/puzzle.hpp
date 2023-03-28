@@ -10,15 +10,13 @@ class Puzzle {
     private:
 
         uint8_t size;
-        std::vector<uint32_t> rows;
-        std::vector<uint32_t> cols;
-        std::vector<std::vector<uint32_t>> rows_domain;
-        std::vector<std::vector<uint32_t>> cols_domain;
-        std::vector<std::vector<uint32_t>> rows_constraints;
-        std::vector<std::vector<uint32_t>> cols_constraints;
+        std::vector<std::vector<bool>> matrix;
+        std::vector<std::vector<std::vector<uint32_t>>> domains;
+        std::vector<std::vector<std::vector<uint32_t>>> constraints;
 
         void fill_vector(std::vector<uint32_t> &v, std::string line, char dlm);
         void fill_vector(std::vector<std::vector<uint32_t>> &v, std::string line, char dlm_outer, char dlm_inner);
+        void fill_constraints(std::vector<std::vector<std::vector<uint32_t>>> &m, std::ifstream &file_handler, char dlm_outer, char dlm_inner);
         void print(std::vector<std::vector<uint32_t>> v);
         void check(std::vector<std::vector<uint32_t>> v);
         void calculate_domains();

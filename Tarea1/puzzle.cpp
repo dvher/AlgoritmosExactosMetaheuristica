@@ -9,6 +9,11 @@ Puzzle::Puzzle() {
 }
 
 Puzzle::Puzzle(std::string filename) {
+    std::vector<std::vector<uint32_t>> rows, cols, dom_r, dom_c;
+    this->constraints.push_back(rows);
+    this->constraints.push_back(cols);
+    this->domains.push_back(dom_r);
+    this->domains.push_back(dom_c);
     this->read_file(filename);
 }
 
@@ -21,27 +26,20 @@ void Puzzle::read_file(std::string filename) {
         exit(1);
     }
 
-    std::string line;
-
-    std::getline(file_handler, line);
-
-    this->fill_vector(this->rows_constraints, line, ' ', ',');
-
-    std::getline(file_handler, line);
-
-    this->fill_vector(this->cols_constraints, line, ' ', ',');
+    this->fill_constraints(this->constraints, file_handler, ' ', ',');
 
     file_handler.close();
 
-    this->check(this->rows_constraints);
-    this->check(this->cols_constraints);
+    for(const auto &v : this->constraints) {
+        this->check(v);
+    }
 
-    if(this->rows_constraints.size() != this->cols_constraints.size()) {
+    if(this->constraints.size() != 2 && this->constraints.size() != this->constraints.size()) {
         std::cerr << "Invalid rows and/or columns size\n";
         exit(1);
     }
 
-    this->size = this->rows_constraints.size();
+    this->size = this->constraints.at(0).size();
     this->calculate_domains();
 
 }
@@ -54,21 +52,33 @@ void Puzzle::print() {
 
     std::cout << "\nRows:\n";
 
-    this->print(this->rows_constraints);
+    this->print(this->constraints.at(0));
 
     std::cout << "\nCols:\n";
 
-    this->print(this->cols_constraints);
+    this->print(this->constraints.at(1));
 
     std::cout << "\nRow domains:\n";
 
-    this->print(this->rows_domain);
+    this->print(this->domains.at(0));
 
     std::cout << "\nCols domains:\n";
 
-    this->print(this->cols_domain);
+    this->print(this->domains.at(1));
 
     std::cout << "\n";
+}
+
+void Puzzle::fill_constraints(std::vector<std::vector<std::vector<uint32_t>>> &m, std::ifstream &file_handler, char dlm_outer, char dlm_inner) {
+
+    std::string line;
+
+    for(auto &v : m) {
+
+        getline(file_handler, line);
+        this->fill_vector(v, line, dlm_outer, dlm_inner);
+    }
+
 }
 
 void Puzzle::fill_vector(std::vector<uint32_t> &v, std::string line, char dlm) {
@@ -265,11 +275,9 @@ std::vector<uint32_t> Puzzle::get_domain(std::vector<uint32_t> domain, std::vect
 
 void Puzzle::calculate_domains() {
 
-    for(const auto &c : this->cols_constraints)
-        this->cols_domain.push_back(this->get_domain(c));
-
-    for(const auto &r : this->rows_constraints)
-        this->rows_domain.push_back(this->get_domain(r));
+    for(uint32_t i = 0; i < this->constraints.size(); i++)
+        for(const auto &v : this->constraints.at(i))
+            this->domains.at(i).push_back(this->get_domain(v));
 
 }
 
