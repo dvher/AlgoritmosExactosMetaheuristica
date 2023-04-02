@@ -61,9 +61,6 @@ print(posiciones)  # mostrar las posiciones encontradas
 print("------------------------------")
 rows, cols = arreglo_resolve(posiciones, rows, cols)
 
-posiciones.remove(posiciones[0])
-posiciones.remove(posiciones[0])
-posiciones.remove([0, 1])
 
 for i in range(len(posiciones)):
     nodo_raiz = Nodo(copy.deepcopy(matriz), posiciones, rows, cols)
