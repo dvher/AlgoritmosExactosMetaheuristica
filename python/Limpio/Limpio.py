@@ -1,17 +1,13 @@
 import copy
 from forwardChecking import Nodo
 from forwardChecking import forward_checking
-from Dominio import Next_pos
-global soluciones
-soluciones = []
 
 # Crear matriz cols variables a utilizar
 matriz = []
 posiciones = []
+dom = []
 rows = []
 cols = []
-pos = []
-row_block = []
 
 # Leer archivo
 with open('/home/ketbome/AlgoritmosExactosMetaheuristica/python/puzzle.txt', 'r') as archivo:
@@ -40,13 +36,8 @@ for i in range(len(rows)):
 print(rows)
 print(cols)
 
-for i in range(len(matriz)):
-    for j in range(len(matriz[i])):
-        if matriz[i][j] == 0:
-            posiciones.append([j, i])  # agregar la posición a 'posiciones'
-
-print(posiciones)  # mostrar las posiciones encontradas
-print("------------------------------")
+# Copiar la matriz para sacar su dominio
+dom = copy.deepcopy(matriz)
 
 print("------------------------------")
 for fila in matriz:
@@ -54,26 +45,20 @@ for fila in matriz:
 
 print("------------------------------")
 
+for fila in dom:
+    print(fila)
+print("------------------------------")
 
-row_order = []
-for i in range(len(matriz)):
-    suma = 0
-    numbers = rows[i].split(",")
-    for j in numbers:
-        suma += int(j)
-    row_order.append(suma)
-print(row_order)
-row_pos = []
-i = len(matriz)
-while i > 0:
-    for j in range(len(rows)):
-        if row_order[j] == i:
-            row_pos.append(j)
-    i -= 1
-print(row_pos)
+for i in range(len(dom)):
+    for j in range(len(dom[i])):
+        if dom[i][j] == 0:
+            posiciones.append([j, i])  # agregar la posición a 'posiciones'
+
+print(posiciones)  # mostrar las posiciones encontradas
+print("------------------------------")
+
+
 for i in range(len(posiciones)):
-    posiciones, row_pos, row_block, pos = Next_pos(
-        posiciones, row_pos, row_block, pos=0)
-    nodo_raiz = Nodo(copy.deepcopy(matriz), posiciones,
-                     rows, cols, row_pos, row_block, pos)
+    nodo_raiz = Nodo(copy.deepcopy(matriz), posiciones, rows, cols)
     forward_checking(nodo_raiz)
+    posiciones.remove(posiciones[0])
