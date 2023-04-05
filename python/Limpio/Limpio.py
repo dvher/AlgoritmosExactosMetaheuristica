@@ -1,6 +1,9 @@
 import copy
 from forwardChecking import Nodo
 from forwardChecking import forward_checking
+from Globales import time_start
+from Globales import soluciones
+import time
 
 # Crear matriz cols variables a utilizar
 matriz = []
@@ -33,32 +36,34 @@ for i in range(len(rows)):
 # for fila in matriz:
 #    print(fila)
 
-print(rows)
-print(cols)
+# print(rows)
+# print(cols)
 
-# Copiar la matriz para sacar su dominio
-dom = copy.deepcopy(matriz)
+# print("------------------------------")
+# for fila in matriz:
+#    print(fila)
 
-print("------------------------------")
-for fila in matriz:
-    print(fila)
+# print("------------------------------")
 
-print("------------------------------")
-
-for fila in dom:
-    print(fila)
-print("------------------------------")
-
-for i in range(len(dom)):
-    for j in range(len(dom[i])):
-        if dom[i][j] == 0:
+for i in range(len(matriz)):
+    for j in range(len(matriz[i])):
+        if matriz[i][j] == 0:
             posiciones.append([j, i])  # agregar la posición a 'posiciones'
 
-print(posiciones)  # mostrar las posiciones encontradas
-print("------------------------------")
+# print(posiciones)  # mostrar las posiciones encontradas
+# print("------------------------------")
 
 
 for i in range(len(posiciones)):
     nodo_raiz = Nodo(copy.deepcopy(matriz), posiciones, rows, cols)
     forward_checking(nodo_raiz)
     posiciones.remove(posiciones[0])
+
+print("--------Soluciones--------")
+for i in soluciones:
+    for linea in i:
+        print(linea)
+    print("------------------------------")
+
+time_end = time.time()
+print("Termino de ejecucion: ", time_end - time_start, " segundos")

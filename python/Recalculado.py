@@ -2,8 +2,10 @@ import copy
 from forwardChecking import Nodo
 from forwardChecking import forward_checking
 from Dominio import Next_pos
-global soluciones
-soluciones = []
+from Globales import soluciones
+from Globales import row_order
+from Globales import time_start
+import time
 
 # Crear matriz cols variables a utilizar
 matriz = []
@@ -37,32 +39,30 @@ for i in range(len(rows)):
 # for fila in matriz:
 #    print(fila)
 
-print(rows)
-print(cols)
+# print(rows)
+# print(cols)
 
 for i in range(len(matriz)):
     for j in range(len(matriz[i])):
         if matriz[i][j] == 0:
             posiciones.append([j, i])  # agregar la posición a 'posiciones'
 
-print(posiciones)  # mostrar las posiciones encontradas
-print("------------------------------")
+# print(posiciones)  # mostrar las posiciones encontradas
+# print("------------------------------")
 
-print("------------------------------")
-for fila in matriz:
-    print(fila)
+# print("------------------------------")
+# for fila in matriz:
+#    print(fila)
 
-print("------------------------------")
+# print("------------------------------")
 
 
-row_order = []
 for i in range(len(matriz)):
     suma = 0
     numbers = rows[i].split(",")
     for j in numbers:
-        suma += int(j)
-    row_order.append(suma)
-print(row_order)
+        suma += int(j) + 1
+    row_order.append(suma - 1)
 row_pos = []
 i = len(matriz)
 while i > 0:
@@ -70,10 +70,19 @@ while i > 0:
         if row_order[j] == i:
             row_pos.append(j)
     i -= 1
-print(row_pos)
+
 for i in range(len(posiciones)):
     posiciones, row_pos, row_block, pos = Next_pos(
         posiciones, row_pos, row_block, pos=0)
     nodo_raiz = Nodo(copy.deepcopy(matriz), posiciones,
                      rows, cols, row_pos, row_block, pos)
     forward_checking(nodo_raiz)
+
+print("--------Soluciones--------")
+for i in soluciones:
+    for linea in i:
+        print(linea)
+    print("------------------------------")
+
+time_end = time.time()
+print("Termino de ejecucion: ", time_end - time_start, " segundos")

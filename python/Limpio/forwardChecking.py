@@ -1,6 +1,8 @@
 from Dominio import Inconsistencias
 import copy
-import sys
+from Globales import time_start
+from Globales import soluciones
+import time
 
 
 class Nodo:
@@ -34,9 +36,9 @@ def forward_checking(nodo):
             # matriz, dominio, A, B, brek = eliminar_inconsistencia(matriz, dominio, pos, X, Y)
             matriz,  dominio, rows, cols, brek = Inconsistencias(
                 matriz, dominio, pos, rows, cols)
-            for linea in matriz:
-                print(linea)
-            print("------------------------------")
+            # for linea in matriz:
+            #    print(linea)
+            # print("------------------------------")
         else:
             brek = True
         # Si no hay poses posibles para alguna dominio, podar el árbol
@@ -44,8 +46,9 @@ def forward_checking(nodo):
             return False
         # Si no hay dominios restantes, se llegó a una solución
         if all(a == "resolve" for a in cols) and all(b == "resolve" for b in rows):
-            print("RESUELTOOOOOOOOOOOOOOOOOOOOOOOO")
-            sys.exit()
+            time_resuelto = time.time()
+            print("Resuelto - Time = ", time_resuelto - time_start, " segundos")
+            soluciones.append(matriz)
             return True
 
         for i in range(len(dominio)):
