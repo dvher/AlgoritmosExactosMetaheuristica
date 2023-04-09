@@ -16,7 +16,7 @@ pos = []
 row_block = []
 
 # Leer archivo
-with open('/home/ketbome/AlgoritmosExactosMetaheuristica/python/puzzle.txt', 'r') as archivo:
+with open('puzzle3.txt', 'r') as archivo:
     linea = archivo.readline()
     boolean = True
     while linea != '':
@@ -70,6 +70,25 @@ while i > 0:
         if row_order[j] == i:
             row_pos.append(j)
     i -= 1
+
+for i in range(len(matriz)):
+    numbers = rows[i].split(",")
+    numbers2 = cols[i].split(",")
+    if int(numbers[0]) == 0:
+        row_block.append(i)
+        rows[i] = 'resolve'
+        j = 0
+        while j < len(matriz):
+            if [j, i] in posiciones:
+                posiciones.remove([j, i])
+            j += 1
+    if int(numbers2[0]) == 0:
+        cols[i] = 'resolve'
+        j = 0
+        while j < len(matriz):
+            if [i, j] in posiciones:
+                posiciones.remove([i, j])
+            j += 1
 
 for i in range(len(posiciones)):
     posiciones, row_pos, row_block, pos = Next_pos(
