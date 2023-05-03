@@ -1,4 +1,4 @@
-##Archivos con los datos tipo:
+## Archivos con los datos tipo:
   En el orden de:
     -Columnas
     -Filas
@@ -8,7 +8,7 @@
       4 2 7 3,4 7,2 7,2 3,4 7 2 4
       4 8 10 1,1,2,1,1 1,1,2,1,1 1,6,1 6 2,2 4 2
 
-##Archivo no optimizado:
+## Archivo no optimizado:
   
 	###1.- Limpio.py 
     
@@ -21,7 +21,7 @@
 		-Se crea un nodo por cada posicion posible posicion, hace un forward checking pasandole el nodo
     
 		-Finalmente imprime las soluciones con su determinado tiempo de ejecución
-  ###2.- forwardchecking.py
+  ### 2.- forwardchecking.py
     
 		-Se hace la clase nodo con sus variables y con sus posibles hijos para hacer el arbol
     
@@ -51,9 +51,9 @@
     
 		-Tambien ve si con el punto pintado queda resuelta una Columna o Fila para de esta forma marcarla como Resolve
 
-##Archivo optimizado - Cambios:
+## Archivo optimizado - Cambios:
 
-###1.- Recalculado.py
+### 1.- Recalculado.py
     
 		-En este caso en vez de comenzar de forma secuencial, este lo hara desde la linea que tenga mayor valor, dado que esta tiende a ser la solución mas rapido, o al mismo tiempo dar la falla mas rápido en caso de no haber solución.
     
@@ -63,13 +63,13 @@
     
 		-Se saca la posición siguiente de la linea con next_pos y se crea un Nodo para comenzar con la travesía
   
-	###2.- forwardchecking.py
+	### 2.- forwardchecking.py
     
 		-Los únicos cambios son que se usa una nueva función Pre_Inconsistencias que evalua de forma diferente las inconsitencias de forma no secuencial.
     
 		-Ademas antes de crear una rama se consulta la siguiente posición con next pos.
   
-	###3.- Dominio.py
+	### 3.- Dominio.py
     
 		Función Pre_Inconsistencias
     
