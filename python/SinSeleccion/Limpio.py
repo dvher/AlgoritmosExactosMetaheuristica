@@ -1,22 +1,20 @@
 import copy
 from forwardChecking import Nodo
 from forwardChecking import forward_checking
-from Dominio import Next_pos
-from Globales import soluciones
-from Globales import row_order
 from Globales import time_start
+from Globales import soluciones
 import time
+from sys import argv
 
 # Crear matriz cols variables a utilizar
 matriz = []
 posiciones = []
+dom = []
 rows = []
 cols = []
-pos = []
-row_block = []
 
 # Leer archivo
-with open('puzzle3.txt', 'r') as archivo:
+with open(argv[1], 'r') as archivo:
     linea = archivo.readline()
     boolean = True
     while linea != '':
@@ -42,6 +40,12 @@ for i in range(len(rows)):
 # print(rows)
 # print(cols)
 
+# print("------------------------------")
+# for fila in matriz:
+#    print(fila)
+
+# print("------------------------------")
+
 for i in range(len(matriz)):
     for j in range(len(matriz[i])):
         if matriz[i][j] == 0:
@@ -50,32 +54,10 @@ for i in range(len(matriz)):
 # print(posiciones)  # mostrar las posiciones encontradas
 # print("------------------------------")
 
-# print("------------------------------")
-# for fila in matriz:
-#    print(fila)
-
-# print("------------------------------")
-
-
-for i in range(len(matriz)):
-    suma = 0
-    numbers = rows[i].split(",")
-    for j in numbers:
-        suma += int(j) + 1
-    row_order.append(suma - 1)
-row_pos = []
-i = len(matriz)
-while i > 0:
-    for j in range(len(rows)):
-        if row_order[j] == i:
-            row_pos.append(j)
-    i -= 1
-
 for i in range(len(matriz)):
     numbers = rows[i].split(",")
     numbers2 = cols[i].split(",")
     if int(numbers[0]) == 0:
-        row_block.append(i)
         rows[i] = 'resolve'
         j = 0
         while j < len(matriz):
@@ -90,12 +72,11 @@ for i in range(len(matriz)):
                 posiciones.remove([i, j])
             j += 1
 
+
 for i in range(len(posiciones)):
-    posiciones, row_pos, row_block, pos = Next_pos(
-        posiciones, row_pos, row_block, pos=0)
-    nodo_raiz = Nodo(copy.deepcopy(matriz), posiciones,
-                     rows, cols, row_pos, row_block, pos)
+    nodo_raiz = Nodo(copy.deepcopy(matriz), posiciones, rows, cols)
     forward_checking(nodo_raiz)
+    posiciones.remove(posiciones[0])
 
 print("--------Soluciones--------")
 for i in soluciones:
