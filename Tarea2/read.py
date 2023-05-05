@@ -22,19 +22,23 @@ def read_file(file_name: str) -> Tuple[List[int], List[List[int]]]:
     return num_uavs, tiempos_aterrizaje, tiempos_requeridos
 
 
-def greedy_determinista(num_uavs, uavs, separaciones):
+def greedy_determinista(num_uavs, uavs, t_espera):
     orden = sorted(range(num_uavs), key=lambda i: uavs[i][1])  # Ordena los UAV por tiempo preferente
-    tiempos_aterrizaje = [0] * num_uavs
+    tiempos_aterrizaje = [0] * num_uavs # Hace un arreglo de 0ros de tamaño num_uavs
     costo = 0
 
     for i in orden:
-        tiempo_aterrizaje = max(uavs[i][0], tiempos_aterrizaje[i - 1] + separaciones[i - 1][i] if i > 0 else 0)
+        tiempo_aterrizaje = max(uavs[i][0], tiempos_aterrizaje[i - 1] + t_espera[i - 1][i] if i > 0 else 0)
         tiempos_aterrizaje[i] = tiempo_aterrizaje
-        costo += abs(tiempo_aterrizaje - uavs[i][1])
+        if tiempo_aterrizaje < uavs[i][1]:
+            costo += (uavs[i][1] - tiempo_aterrizaje) * 2  # Costo adicional por estar por debajo del tiempo preferente
+        else:
+            costo += abs(tiempo_aterrizaje - uavs[i][1])
+
 
     return costo, tiempos_aterrizaje
 
-def greedy_estocastico(num_uavs, uavs, separaciones, seed):
+def greedy_estocastico(num_uavs, uavs, t_espera, seed):
     random.seed(seed)
     orden = sorted(range(num_uavs), key=lambda i: uavs[i][1])  # Ordena los UAV por tiempo preferente
     tiempos_aterrizaje = [0] * num_uavs
@@ -51,16 +55,16 @@ def greedy_estocastico(num_uavs, uavs, separaciones, seed):
 
 
 
-archivo = 'C:\Users\Ketbome\Desktop\AlgoritmosExactosMetaheuristica\Tarea2\t2_Titan.txt'
+archivo = 'C:/Users/Ketbome/Desktop/AlgoritmosExactosMetaheuristica/Tarea2/t2_Titan.txt'
 
-num_uavs, uavs, trequeridos = read_file(archivo)
-costo_determinista, tiempos_aterrizaje_determinista = greedy_determinista(num_uavs, uavs, trequeridos)
+num_uavs, uavs, t_espera = read_file(archivo)
+costo_determinista, tiempos_aterrizaje_determinista = greedy_determinista(num_uavs, uavs, t_espera)
 print(f"Archivo: {archivo}")
 print(f"Greedy Determinista - Costo: {costo_determinista}")
 print(f"Tiempos de aterrizaje: {tiempos_aterrizaje_determinista}")
-#print("Greedy Estocástico:")
-#for seed in range(5):
-#    costo_estocastico, tiempos_aterrizaje_estocastico = greedy_estocastico(num_uavs, uavs, separaciones, seed)
-#    print(f"  Seed {seed} - Costo: {costo_estocastico}")
-#    print(f"  Tiempos de aterrizaje: {tiempos_aterrizaje_estocastico}")
+print("Greedy Estocástico:")
+for seed in range(5):
+    costo_estocastico, tiempos_aterrizaje_estocastico = greedy_estocastico(num_uavs, uavs, t_espera, seed)
+    print(f"  Seed {seed} - Costo: {costo_estocastico}")
+    print(f"  Tiempos de aterrizaje: {tiempos_aterrizaje_estocastico}")
 print()
