@@ -51,14 +51,14 @@ def greedy_estocastico(num_uavs, uavs, separaciones, seed):
 
 
 
-archivo = 't2_Titan.txt'
+archivo = 'C:\Users\Ketbome\Desktop\AlgoritmosExactosMetaheuristica\Tarea2\t2_Titan.txt'
 
-num_uavs, uavs, separaciones = read_file(archivo)
-costo_determinista, tiempos_aterrizaje_determinista = greedy_determinista(num_uavs, uavs, separaciones)
+num_uavs, uavs, trequeridos = read_file(archivo)
+costo_determinista, tiempos_aterrizaje_determinista = greedy_determinista(num_uavs, uavs, trequeridos)
 print(f"Archivo: {archivo}")
 print(f"Greedy Determinista - Costo: {costo_determinista}")
 print(f"Tiempos de aterrizaje: {tiempos_aterrizaje_determinista}")
-print("Greedy Estocástico:")
+#print("Greedy Estocástico:")
 #for seed in range(5):
 #    costo_estocastico, tiempos_aterrizaje_estocastico = greedy_estocastico(num_uavs, uavs, separaciones, seed)
 #    print(f"  Seed {seed} - Costo: {costo_estocastico}")
