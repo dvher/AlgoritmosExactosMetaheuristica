@@ -48,7 +48,10 @@ def greedy_estocastico(num_uavs, uavs, t_espera, seed):
         rango_tiempo = list(range(uavs[i][0], uavs[i][2] + 1))
         tiempo_aterrizaje = random.choice(rango_tiempo)
         tiempos_aterrizaje[i] = tiempo_aterrizaje
-        costo += abs(tiempo_aterrizaje - uavs[i][1])
+        if tiempo_aterrizaje < uavs[i][1]:
+            costo += (uavs[i][1] - tiempo_aterrizaje) * 2  # Costo adicional por estar por debajo del tiempo preferente
+        else:
+            costo += abs(tiempo_aterrizaje - uavs[i][1])
 
     return costo, tiempos_aterrizaje
 
