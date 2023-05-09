@@ -34,6 +34,8 @@ def greedy_determinista(num_uavs, uavs, t_espera):
         tiempos_aterrizaje[i] = tiempo_aterrizaje
         if tiempo_aterrizaje < uavs[i][1]:
             costo += (uavs[i][1] - tiempo_aterrizaje) * 2  # Costo adicional por estar por debajo del tiempo preferente
+        elif tiempo_aterrizaje > uavs[i][2]:
+            costo += (tiempo_aterrizaje - uavs[i][2]) * 100 # Muy costoso solucion pasa a ser infactible
         else:
             costo += abs(tiempo_aterrizaje - uavs[i][1])
         ord_actual += 1
@@ -56,7 +58,7 @@ def greedy_estocastico(num_uavs, uavs, t_espera, seed):
         if tiempo_aterrizaje < uavs[i][1]:
             costo += (uavs[i][1] - tiempo_aterrizaje) * 2  # Costo adicional por estar por debajo del tiempo preferente
         elif tiempo_aterrizaje > uavs[i][2]:
-            costo += (tiempo_aterrizaje - uavs[i][2]) * 10 # Muy costoso solucion
+            costo += (tiempo_aterrizaje - uavs[i][2]) * 100 # Muy costoso solucion pasa a ser infactible
         else:
             costo += abs(tiempo_aterrizaje - uavs[i][1])
         ord_actual += 1
