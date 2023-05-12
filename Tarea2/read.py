@@ -49,7 +49,7 @@ def greedy_determinista(num_uavs: int, uavs: List[List[int]], t_espera: List[Lis
         else:
             costo += abs(tiempo_aterrizaje - uavs[i][1])
 
-    return costo, tiempos_aterrizaje
+    return costo, tiempos_aterrizaje, orden
 
 
 def greedy_estocastico(num_uavs: int, uavs: List[List[int]], t_espera: List[List[int]], seed: int) -> Tuple[int, List[int]]:
@@ -78,10 +78,10 @@ def greedy_estocastico(num_uavs: int, uavs: List[List[int]], t_espera: List[List
         else:
             costo += abs(tiempo_aterrizaje - uavs[i][1])
 
-    return costo, tiempos_aterrizaje
+    return costo, tiempos_aterrizaje, orden
 
 
-def hill_climbing(num_uavs: int, uavs: List[List[int]], t_espera: List[List[int]], seed: int, max_iter: int, costo_actual, tiempos_aterrizaje_actual) -> Tuple[int, List[int]]:
+def hill_climbing(num_uavs: int, uavs: List[List[int]], t_espera: List[List[int]], seed: int, max_iter: int, costo_actual, tiempos_aterrizaje_actual, orden) -> Tuple[int, List[int]]:
     random.seed(seed)
 
     for _ in range(max_iter):
@@ -98,6 +98,8 @@ def hill_climbing(num_uavs: int, uavs: List[List[int]], t_espera: List[List[int]
             elif tiempos_aterrizaje_vecino[k] > uavs[k][2]:
                 costo_vecino += (tiempos_aterrizaje_vecino[k] -
                                  uavs[k][2]) * VALOR_INFACTIBLE
+            elif tiempos_aterrizaje_vecino[k] < uavs[k][0]:
+                costo_vecino += (uavs[k][2] - tiempos_aterrizaje_vecino[k]) * VALOR_INFACTIBLE
             else:
                 costo_vecino += abs(tiempos_aterrizaje_vecino[k] - uavs[k][1])
 
@@ -112,7 +114,7 @@ def hill_climbing(num_uavs: int, uavs: List[List[int]], t_espera: List[List[int]
 archivo = 'C:/Users/Ketbome/Desktop/AlgoritmosExactosMetaheuristica/Tarea2/t2_Titan.txt'
 
 num_uavs, uavs, t_espera = read_file(archivo)
-costo_determinista, tiempos_aterrizaje_determinista = greedy_determinista(
+costo_determinista, tiempos_aterrizaje_determinista, orden = greedy_determinista(
     num_uavs, uavs, t_espera)
 print(f"Archivo: {archivo}")
 print(f"Greedy Determinista - Costo: {costo_determinista}")
@@ -125,13 +127,13 @@ print(f"  Tiempos de aterrizaje: {tiempos_aterrizaje_hill_climbing}")
 print()
 for seed in range(5):
     print(f"Greedy Estocástico seed {seed}:")
-    costo_estocastico, tiempos_aterrizaje_estocastico = greedy_estocastico(
+    costo_estocastico, tiempos_aterrizaje_estocastico, orden = greedy_estocastico(
         num_uavs, uavs, t_espera, seed)
     print(f"  Seed {seed} - Costo: {costo_estocastico}")
     print(f"  Tiempos de aterrizaje: {tiempos_aterrizaje_estocastico}")
     print(f"  Hill Climbing - Greedy estocastico:")
     costo_hill_climbing, tiempos_aterrizaje_hill_climbing = hill_climbing(
-        num_uavs, uavs, t_espera, seed, 1000, costo_estocastico, tiempos_aterrizaje_estocastico)
+        num_uavs, uavs, t_espera, seed, 1000, costo_estocastico, tiempos_aterrizaje_estocastico, orden)
     print(f"     Seed {seed} - Costo: {costo_hill_climbing}")
     print(f"     Tiempos de aterrizaje: {tiempos_aterrizaje_hill_climbing}")
     print()
