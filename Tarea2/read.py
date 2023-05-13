@@ -37,17 +37,20 @@ def greedy_determinista(num_uavs: int, uavs: List[List[int]], t_espera: List[Lis
     costo = 0
 
     for ord_actual, i in enumerate(orden):
-        tiempo_aterrizaje = max(uavs[i][0], tiempos_aterrizaje[orden[ord_actual - 1]
+        tiempo_aterrizaje = max(uavs[i][1], tiempos_aterrizaje[orden[ord_actual - 1]
                                                                ] + t_espera[orden[ord_actual - 1]][i] if i > 0 else 0)
         tiempos_aterrizaje[i] = tiempo_aterrizaje
         if tiempo_aterrizaje < uavs[i][1]:
             # Costo adicional por estar por debajo del tiempo preferente
-            costo += (uavs[i][1] - tiempo_aterrizaje) * 2
+            costo += uavs[i][1] - tiempo_aterrizaje + 1
+        elif tiempo_aterrizaje > uavs[i][1]:
+            # Costo adicional por estar por arriba del tiempo preferente mientras mas lejos mas costo
+            costo += tiempo_aterrizaje - uavs[i][1] + 1
         elif tiempo_aterrizaje > uavs[i][2]:
             # Muy costoso solucion pasa a ser infactible
             costo += (tiempo_aterrizaje - uavs[i][2]) * VALOR_INFACTIBLE
         else:
-            costo += abs(tiempo_aterrizaje - uavs[i][1])
+            costo += 0 #Está en el tiempo preferente
 
     return costo, tiempos_aterrizaje, orden
 
@@ -63,7 +66,7 @@ def greedy_estocastico(num_uavs: int, uavs: List[List[int]], t_espera: List[List
     costo = 0
 
     for ord_actual, i in enumerate(orden):
-        t_sig_aterrizaje = max(uavs[i][0], tiempos_aterrizaje[orden[ord_actual - 1]
+        t_sig_aterrizaje = max(uavs[i][1], tiempos_aterrizaje[orden[ord_actual - 1]
                                                               ] + t_espera[orden[ord_actual - 1]][i] if i > 0 else 0)
         # Aca para hacerlo estocastico que elija entre un rango de tiempos desde el que puede aterrizar
         rango_tiempo = list(range(t_sig_aterrizaje, t_sig_aterrizaje + 50))
@@ -71,12 +74,15 @@ def greedy_estocastico(num_uavs: int, uavs: List[List[int]], t_espera: List[List
         tiempos_aterrizaje[i] = tiempo_aterrizaje
         if tiempo_aterrizaje < uavs[i][1]:
             # Costo adicional por estar por debajo del tiempo preferente
-            costo += (uavs[i][1] - tiempo_aterrizaje) * 2
+            costo += uavs[i][1] - tiempo_aterrizaje + 1
+        elif tiempo_aterrizaje > uavs[i][1]:
+            # Costo adicional por estar por arriba del tiempo preferente mientras mas lejos mas costo
+            costo += tiempo_aterrizaje - uavs[i][1] + 1
         elif tiempo_aterrizaje > uavs[i][2]:
             # Muy costoso solucion pasa a ser infactible
             costo += (tiempo_aterrizaje - uavs[i][2]) * VALOR_INFACTIBLE
         else:
-            costo += abs(tiempo_aterrizaje - uavs[i][1])
+            costo += 0 #Está en el tiempo preferente
 
     return costo, tiempos_aterrizaje, orden
 
@@ -94,12 +100,13 @@ def hill_climbing(num_uavs: int, uavs: List[List[int]], t_espera: List[List[int]
         costo_vecino = 0
         for k in range(num_uavs):
             if tiempos_aterrizaje_vecino[k] < uavs[k][1]:
-                costo_vecino += (uavs[k][1] - tiempos_aterrizaje_vecino[k]) * 2
+                costo_vecino += uavs[k][1] - tiempos_aterrizaje_vecino[k]
             elif tiempos_aterrizaje_vecino[k] > uavs[k][2]:
                 costo_vecino += (tiempos_aterrizaje_vecino[k] -
                                  uavs[k][2]) * VALOR_INFACTIBLE
             elif tiempos_aterrizaje_vecino[k] < uavs[k][0]:
-                costo_vecino += (uavs[k][2] - tiempos_aterrizaje_vecino[k]) * VALOR_INFACTIBLE
+                # Si esta por encima del tiempo maximo
+                costo_vecino += (uavs[k][2] - tiempos_aterrizaje_vecino[k]) * VALOR_INFACTIBLE 
             else:
                 costo_vecino += abs(tiempos_aterrizaje_vecino[k] - uavs[k][1])
 
@@ -121,7 +128,7 @@ print(f"Greedy Determinista - Costo: {costo_determinista}")
 print(f"Tiempos de aterrizaje: {tiempos_aterrizaje_determinista}")
 print("Hill Climbing - Greedy determinista:")
 costo_hill_climbing, tiempos_aterrizaje_hill_climbing = hill_climbing(
-    num_uavs, uavs, t_espera, 0, 1000, costo_determinista, tiempos_aterrizaje_determinista)
+    num_uavs, uavs, t_espera, 0, 1000, costo_determinista, tiempos_aterrizaje_determinista, orden)
 print(f"  Seed {0} - Costo: {costo_hill_climbing}")
 print(f"  Tiempos de aterrizaje: {tiempos_aterrizaje_hill_climbing}")
 print()
