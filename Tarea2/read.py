@@ -96,10 +96,13 @@ def greedy_estocastico(num_uavs: int, uavs: List[List[int]], t_espera: List[List
     return costo, tiempos_aterrizaje, orden, orden_costos
 
 
-#def hill_climbing(num_uavs: int, uavs: List[List[int]], t_espera: List[List[int]], costo_actual, tiempos_aterrizaje_actual, orden) -> Tuple[int, List[int]]:
-    
+def hill_climbing(num_uavs: int, uavs: List[List[int]], t_espera: List[List[int]], costo_actual, tiempos_aterrizaje_actual, orden) -> Tuple[int, List[int]]:
+    for i in enumerate(orden):
+        if tiempos_aterrizaje_actual[i] < uavs[i][1]:
+            # Se ve si se puede mejorar el tiempo acercandolo a el tiempo preferente para bajar el costo
 
-    return costo_actual, tiempos_aterrizaje_actual
+
+            return costo_actual, tiempos_aterrizaje_actual
 
 
 archivo = 'C:/Users/Ketbome/Desktop/AlgoritmosExactosMetaheuristica/Tarea2/t2_Titan.txt'
