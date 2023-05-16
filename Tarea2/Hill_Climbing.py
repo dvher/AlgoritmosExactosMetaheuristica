@@ -74,8 +74,8 @@ def hill_climbing_mejor(num_uavs: int, uavs: List[List[int]], t_espera: List[Lis
                         costo_orden[i] = nuevo_costo
                         tiempos_aterrizaje_actual[i] = nuevo_tiempo_aterrizaje
                         cambios += 1
-                elif tiempos_aterrizaje_actual[orden[n + 1]] - t_espera[orden[n + 1]][i] < uavs[i][1]:
-                    nuevo_tiempo_aterrizaje = tiempos_aterrizaje_actual[orden[n + 1]] - t_espera[orden[n + 1]][i]
+                elif tiempos_aterrizaje_actual[orden[n + 1]] - t_espera[orden[n]][i] < uavs[i][1]:
+                    nuevo_tiempo_aterrizaje = tiempos_aterrizaje_actual[orden[n + 1]] - t_espera[orden[n]][i]
                     nuevo_costo = uavs[i][1] - nuevo_tiempo_aterrizaje
                     if nuevo_costo < costo_orden[i]:
                         costo_actual += nuevo_costo - costo_orden[i]
