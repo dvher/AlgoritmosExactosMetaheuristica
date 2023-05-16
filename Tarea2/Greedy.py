@@ -54,7 +54,7 @@ def greedy_estocastico(num_uavs: int, uavs: List[List[int]], t_espera: List[List
         # Aca para hacerlo estocastico que elija entre un rango de tiempos desde el que puede aterrizar
         diferencia = uavs[i][2] - uavs[i][0]
         if diferencia != 0:
-            porcentaje = diferencia * 0.10 # Mientras mayor sea el porcentaje mas dispersos los tiempos que tomará, y más probabilidad de caer en soluciones infactibles
+            porcentaje = diferencia * 0.20 # Mientras mayor sea el porcentaje mas dispersos los tiempos que tomará, y más probabilidad de caer en soluciones infactibles
             rango_tiempo = list(range(t_sig_aterrizaje, t_sig_aterrizaje + int(porcentaje)))
             tiempo_aterrizaje = random.choice(rango_tiempo)
             tiempos_aterrizaje[i] = tiempo_aterrizaje
