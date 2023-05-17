@@ -150,7 +150,6 @@ def hill_climbing_mejor(num_uavs: int, uavs: List[Tuple[int, int, int]], t_esper
     boolean = True
     fact = "Factible"
     while(boolean):
-        cambios = 0
         Mas_mejora = 0
         for n, i in enumerate(orden):
             if tiempos_aterrizaje_actual[i] < uavs[i][1]:
@@ -236,7 +235,7 @@ def hill_climbing_mejor(num_uavs: int, uavs: List[Tuple[int, int, int]], t_esper
                 fact = "Infactible"
             else:
                 fact = "Factible"
-        elif cambios == 0: # No se hicieron cambios
+        else: # No se hicieron cambios
             boolean = False
 
 
