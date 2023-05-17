@@ -1,8 +1,11 @@
 from typing import List, Tuple
 
+VALOR_INFACTIBLE = 100
+
 def hill_climbing(num_uavs: int, uavs: List[List[int]], t_espera: List[List[int]], costo_actual, solucion_anterior, orden, costos) -> Tuple[int, List[int]]:
     tiempos_aterrizaje_actual = solucion_anterior.copy()
     costo_orden = costos.copy()
+    fact = "Factible"
     
     for n, i in enumerate(orden):
         if tiempos_aterrizaje_actual[i] < uavs[i][1]:
@@ -39,11 +42,19 @@ def hill_climbing(num_uavs: int, uavs: List[List[int]], t_espera: List[List[int]
                     tiempos_aterrizaje_actual[i] = nuevo_tiempo_aterrizaje
             elif tiempos_aterrizaje_actual[orden[n - 1]] + t_espera[orden[n - 1]][i] > uavs[i][1]:
                 nuevo_tiempo_aterrizaje = tiempos_aterrizaje_actual[orden[n - 1]] + t_espera[orden[n - 1]][i]
-                nuevo_costo = nuevo_tiempo_aterrizaje - uavs[i][1]
+                if tiempos_aterrizaje_actual[orden[n - 1]] + t_espera[orden[n - 1]][i] > uavs[i][2]:
+                    fact = "Infactible"
+                    nuevo_costo = nuevo_tiempo_aterrizaje - uavs[i][1] * 100
+                else: 
+                    nuevo_costo = nuevo_tiempo_aterrizaje - uavs[i][1]
                 if nuevo_costo < costo_orden[i]:
                     costo_actual += nuevo_costo - costo_orden[i]
                     costo_orden[i] = nuevo_costo
                     tiempos_aterrizaje_actual[i] = nuevo_tiempo_aterrizaje
+                    if tiempos_aterrizaje_actual[i] > uavs[i][2]:
+                        fact = "Infactible"
+                    else: 
+                        fact = "Factible"
             else:
                 nuevo_tiempo_aterrizaje = uavs[i][1]
                 nuevo_costo = 0
@@ -53,7 +64,7 @@ def hill_climbing(num_uavs: int, uavs: List[List[int]], t_espera: List[List[int]
                     tiempos_aterrizaje_actual[i] = nuevo_tiempo_aterrizaje
 
 
-    return costo_actual, tiempos_aterrizaje_actual, costo_orden
+    return costo_actual, tiempos_aterrizaje_actual, costo_orden, fact
 
 
 # Hill climbing mejor mejora en este caso hace iteraciones del mismo algoritmo n veces hasta que no se hagan mas cambios que solucionen el costo
@@ -61,6 +72,7 @@ def hill_climbing_mejor(num_uavs: int, uavs: List[List[int]], t_espera: List[Lis
     tiempos_aterrizaje_actual = solucion_anterior.copy()
     costo_orden = costos.copy()
     boolean = True
+    fact = "Factible"
     while(boolean):
         cambios = 0
         for n, i in enumerate(orden):
@@ -102,12 +114,16 @@ def hill_climbing_mejor(num_uavs: int, uavs: List[List[int]], t_espera: List[Lis
                         cambios += 1
                 elif tiempos_aterrizaje_actual[orden[n - 1]] + t_espera[orden[n - 1]][i] > uavs[i][1]:
                     nuevo_tiempo_aterrizaje = tiempos_aterrizaje_actual[orden[n - 1]] + t_espera[orden[n - 1]][i]
-                    nuevo_costo = nuevo_tiempo_aterrizaje - uavs[i][1]
+                    if tiempos_aterrizaje_actual[orden[n - 1]] + t_espera[orden[n - 1]][i] > uavs[i][2]:
+                        fact = "Infactible"
+                        nuevo_costo = nuevo_tiempo_aterrizaje - uavs[i][1] * 100
+                    else: 
+                        nuevo_costo = nuevo_tiempo_aterrizaje - uavs[i][1]
                     if nuevo_costo < costo_orden[i]:
-                        costo_actual += nuevo_costo - costo_orden[i]
-                        costo_orden[i] = nuevo_costo
-                        tiempos_aterrizaje_actual[i] = nuevo_tiempo_aterrizaje
-                        cambios += 1
+                        if tiempos_aterrizaje_actual[i] > uavs[i][2]:
+                            fact = "Infactible"
+                        else: 
+                            fact = "Factible"
                 else:
                     nuevo_tiempo_aterrizaje = uavs[i][1]
                     nuevo_costo = 0
@@ -120,4 +136,4 @@ def hill_climbing_mejor(num_uavs: int, uavs: List[List[int]], t_espera: List[Lis
             boolean = False
 
 
-    return costo_actual, tiempos_aterrizaje_actual, costo_orden
+    return costo_actual, tiempos_aterrizaje_actual, costo_orden, fact

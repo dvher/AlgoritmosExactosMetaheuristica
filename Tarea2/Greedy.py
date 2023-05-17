@@ -14,10 +14,11 @@ def greedy_determinista(num_uavs: int, uavs: List[List[int]], t_espera: List[Lis
     tiempos_aterrizaje = [0] * num_uavs
     orden_costos = [0] * num_uavs
     costo = 0
+    fact = "Factible"
 
-    for ord_actual, i in enumerate(orden):
-        tiempo_aterrizaje = max(uavs[i][1], tiempos_aterrizaje[orden[ord_actual - 1]
-                                                               ] + t_espera[orden[ord_actual - 1]][i] if i > 0 else 0)
+    for n, i in enumerate(orden):
+        tiempo_aterrizaje = max(uavs[i][1], tiempos_aterrizaje[orden[n - 1]
+                                                               ] + t_espera[orden[n - 1]][i] if i > 0 else 0)
         tiempos_aterrizaje[i] = tiempo_aterrizaje
         if tiempo_aterrizaje < uavs[i][1]:
             # Costo adicional por estar por debajo del tiempo preferente
@@ -31,11 +32,12 @@ def greedy_determinista(num_uavs: int, uavs: List[List[int]], t_espera: List[Lis
             # Muy costoso solucion pasa a ser infactible
             costo += (tiempo_aterrizaje - uavs[i][2]) * VALOR_INFACTIBLE
             orden_costos[i] = (tiempo_aterrizaje - uavs[i][2]) * VALOR_INFACTIBLE
+            fact = "Factible"
         else:
             costo += 0 #Está en el tiempo preferente
             orden_costos[i] = 0
 
-    return costo, tiempos_aterrizaje, orden, orden_costos
+    return costo, tiempos_aterrizaje, orden, orden_costos, fact
 
 
 def greedy_estocastico(num_uavs: int, uavs: List[List[int]], t_espera: List[List[int]], seed: int) -> Tuple[int, List[int]]:
@@ -47,15 +49,22 @@ def greedy_estocastico(num_uavs: int, uavs: List[List[int]], t_espera: List[List
     tiempos_aterrizaje = [0] * num_uavs
     orden_costos = [0] * num_uavs
     costo = 0
+    fact = "Factible"
 
-    for ord_actual, i in enumerate(orden):
-        t_sig_aterrizaje = max(uavs[i][0], tiempos_aterrizaje[orden[ord_actual - 1]
-                                                              ] + t_espera[orden[ord_actual - 1]][i] if i > 0 else 0)
+    for n, i in enumerate(orden):
+        t_sig_aterrizaje = max(uavs[i][0], tiempos_aterrizaje[orden[n - 1]
+                                                              ] + t_espera[orden[n - 1]][i] if i > 0 else 0)
         # Aca para hacerlo estocastico que elija entre un rango de tiempos desde el que puede aterrizar
-        diferencia = uavs[i][2] - uavs[i][0]
+        if t_sig_aterrizaje < uavs[i][2]:
+            diferencia = uavs[i][2] - t_sig_aterrizaje
+        else: 
+            tiempo_aterrizaje = t_sig_aterrizaje
+            diferencia = 0
+        porcentaje = diferencia * 0.10 # Mientras mayor sea el porcentaje mas dispersos los tiempos que tomará, y más probabilidad de caer en soluciones infactibles
+        rango_tiempo = list(range(t_sig_aterrizaje, t_sig_aterrizaje + int(porcentaje)))
+        if int(porcentaje) == 0:
+            diferencia = 0
         if diferencia != 0:
-            porcentaje = diferencia * 0.20 # Mientras mayor sea el porcentaje mas dispersos los tiempos que tomará, y más probabilidad de caer en soluciones infactibles
-            rango_tiempo = list(range(t_sig_aterrizaje, t_sig_aterrizaje + int(porcentaje)))
             tiempo_aterrizaje = random.choice(rango_tiempo)
             tiempos_aterrizaje[i] = tiempo_aterrizaje
         else: 
@@ -72,8 +81,10 @@ def greedy_estocastico(num_uavs: int, uavs: List[List[int]], t_espera: List[List
             # Muy costoso solucion pasa a ser infactible
             costo += (tiempo_aterrizaje - uavs[i][2]) * VALOR_INFACTIBLE
             orden_costos[i] = (tiempo_aterrizaje - uavs[i][2]) * VALOR_INFACTIBLE
+            fact = "Infactible"
+            
         else:
             costo += 0 #Está en el tiempo preferente
             orden_costos[i] = 0
 
-    return costo, tiempos_aterrizaje, orden, orden_costos
+    return costo, tiempos_aterrizaje, orden, orden_costos, fact
