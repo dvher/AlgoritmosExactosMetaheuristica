@@ -52,7 +52,7 @@ def main():
         print(f"Greedy Determinista - Costo Total: {costo_determinista} {fact}")
         if opcion == 2 or opcion == 4:
             print(f"Greedy Determinista - Costo en la nave i: {orden_costos}")
-        elif opcion == 3 or opcion == 4:
+        if opcion == 3 or opcion == 4:
             print(f"Tiempos de aterrizaje de cada nave i: {tiempos_aterrizaje_determinista}")
 
         best_cost = costo_determinista
@@ -65,7 +65,7 @@ def main():
         print(f"  Costo Total: {costo_hill_climbing} {fact}")
         if opcion == 2 or opcion == 4:
             print(f"  Costo en la nave i: {orden_costos_hill}")
-        elif opcion == 3 or opcion == 4:
+        if opcion == 3 or opcion == 4:
             print(f"  Tiempos de aterrizaje de cada nave i: {tiempos_aterrizaje_hill_climbing}")
         if costo_hill_climbing < best_cost:
             best_cost = costo_hill_climbing
@@ -78,7 +78,7 @@ def main():
         print(f"  Costo Total: {costo_hill_climbing} {fact}")
         if opcion == 2 or opcion == 4:
             print(f"  Costo en la nave i: {orden_costos_hill_mejor}")
-        elif opcion == 3 or opcion == 4:
+        if opcion == 3 or opcion == 4:
             print(f"  Tiempos de aterrizaje de cada nave i: {tiempos_aterrizaje_hill_climbing}")
         if costo_hill_climbing < best_cost:
             best_cost = costo_hill_climbing
@@ -93,7 +93,7 @@ def main():
             print(f"  Seed {seed} - Costo Total: {costo_estocastico} {fact}")
             if opcion == 2 or opcion == 4:
                 print(f"  Seed {seed} - Costo en la nave i: {orden_costos}")
-            elif opcion == 3 or opcion == 4:
+            if opcion == 3 or opcion == 4:
                 print(f"  Seed {seed} - Tiempos de aterrizaje de cada nave i: {tiempos_aterrizaje_estocastico}")
             if costo_estocastico < best_cost:
                 best_cost = costo_estocastico
@@ -106,7 +106,7 @@ def main():
             print(f"     Seed {seed} - Costo Total: {costo_hill_climbing} {fact}")
             if opcion == 2 or opcion == 4:
                 print(f"     Seed {seed} - Costo en la nave i: {orden_costos_hill}")
-            elif opcion == 3 or opcion == 4:
+            if opcion == 3 or opcion == 4:
                 print(f"     Seed {seed} - Tiempos de aterrizaje de cada nave i: {tiempos_aterrizaje_hill_climbing}")
             if costo_hill_climbing < best_cost:
                 best_cost = costo_hill_climbing
@@ -118,9 +118,9 @@ def main():
             
             if opcion == 1:
                 print(f"     Seed {seed} - Costo Total: {costo_hill_climbing_mejor} {fact}")
-            elif opcion == 2 or opcion == 4:
+            if opcion == 2 or opcion == 4:
                 print(f"     Seed {seed} - Costo en la nave i: {orden_costos_hill_mejor}")
-            elif opcion == 3 or opcion == 4:
+            if opcion == 3 or opcion == 4:
                 print(f"     Seed {seed} - Tiempos de aterrizaje de cada nave i: {tiempos_aterrizaje_hill_climbing_mejor}")
             if costo_hill_climbing_mejor < best_cost:
                 best_cost = costo_hill_climbing_mejor
