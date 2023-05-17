@@ -44,7 +44,7 @@ def hill_climbing(num_uavs: int, uavs: List[List[int]], t_espera: List[List[int]
                 nuevo_tiempo_aterrizaje = tiempos_aterrizaje_actual[orden[n - 1]] + t_espera[orden[n - 1]][i]
                 if tiempos_aterrizaje_actual[orden[n - 1]] + t_espera[orden[n - 1]][i] > uavs[i][2]:
                     fact = "Infactible"
-                    nuevo_costo = nuevo_tiempo_aterrizaje - uavs[i][1] * 100
+                    nuevo_costo = nuevo_tiempo_aterrizaje - uavs[i][1] * VALOR_INFACTIBLE
                 else: 
                     nuevo_costo = nuevo_tiempo_aterrizaje - uavs[i][1]
                 if nuevo_costo < costo_orden[i]:
@@ -116,10 +116,13 @@ def hill_climbing_mejor(num_uavs: int, uavs: List[List[int]], t_espera: List[Lis
                     nuevo_tiempo_aterrizaje = tiempos_aterrizaje_actual[orden[n - 1]] + t_espera[orden[n - 1]][i]
                     if tiempos_aterrizaje_actual[orden[n - 1]] + t_espera[orden[n - 1]][i] > uavs[i][2]:
                         fact = "Infactible"
-                        nuevo_costo = nuevo_tiempo_aterrizaje - uavs[i][1] * 100
+                        nuevo_costo = nuevo_tiempo_aterrizaje - uavs[i][1] * VALOR_INFACTIBLE
                     else: 
                         nuevo_costo = nuevo_tiempo_aterrizaje - uavs[i][1]
                     if nuevo_costo < costo_orden[i]:
+                        costo_actual += nuevo_costo - costo_orden[i]
+                        costo_orden[i] = nuevo_costo
+                        tiempos_aterrizaje_actual[i] = nuevo_tiempo_aterrizaje
                         if tiempos_aterrizaje_actual[i] > uavs[i][2]:
                             fact = "Infactible"
                         else: 
