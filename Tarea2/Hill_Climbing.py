@@ -139,6 +139,9 @@ def hill_climbing(num_uavs: int, uavs: List[Tuple[int, int, int]], t_espera: Lis
                         cambios += 1
         if cambios == 0:
             boolean = False
+    for n, i in enumerate(orden):
+        if tiempos_aterrizaje_actual[i] > uavs[i][2] or tiempos_aterrizaje_actual[i] < uavs[i][0]:
+            fact = "Infactible"
 
 
     return costo_actual, tiempos_aterrizaje_actual, costo_orden, fact
@@ -207,8 +210,7 @@ def hill_climbing_mejor(num_uavs: int, uavs: List[Tuple[int, int, int]], t_esper
                             costo_mejor = nuevo_costo
                             nuevo_aterrizaje_mejor = nuevo_tiempo_aterrizaje 
                 elif tiempos_aterrizaje_actual[orden[n - 1]] + t_espera[orden[n - 1]][i] > uavs[i][2]: 
-                    nuevo_tiempo_aterrizaje = tiempos_aterrizaje_actual[orden[n - 1]] + t_espera[orden[n - 1]][i]   
-                    fact = "Infactible"
+                    nuevo_tiempo_aterrizaje = tiempos_aterrizaje_actual[orden[n - 1]] + t_espera[orden[n - 1]][i]
                     nuevo_costo = (nuevo_tiempo_aterrizaje - uavs[i][1]) * VALOR_INFACTIBLE
                     mejora = abs(costo_orden[i] - nuevo_costo)
                     if mejora > Mas_mejora:
@@ -231,12 +233,11 @@ def hill_climbing_mejor(num_uavs: int, uavs: List[Tuple[int, int, int]], t_esper
             costo_actual += costo_mejor - costo_orden[UAV_mejor]
             costo_orden[UAV_mejor] = costo_mejor
             tiempos_aterrizaje_actual[UAV_mejor] = nuevo_aterrizaje_mejor
-            if tiempos_aterrizaje_actual[UAV_mejor] > uavs[UAV_mejor][2]:
-                fact = "Infactible"
-            else:
-                fact = "Factible"
         else: # No se hicieron cambios
             boolean = False
+    for n, i in enumerate(orden):
+        if tiempos_aterrizaje_actual[i] > uavs[i][2] or tiempos_aterrizaje_actual[i] < uavs[i][0]:
+            fact = "Infactible"
 
 
     return costo_actual, tiempos_aterrizaje_actual, costo_orden, fact
