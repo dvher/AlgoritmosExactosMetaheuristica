@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Tuple, Literal
 import copy
 
 VALOR_INFACTIBLE = 100
@@ -8,7 +8,7 @@ def hill_climbing(num_uavs: int, uavs: List[List[int]], t_espera: List[List[int]
     tiempos_aterrizaje_actual = solucion_anterior.copy()
     costo_orden = costos.copy()
     fact = "Factible"
-    
+
     for n, i in enumerate(orden):
         if tiempos_aterrizaje_actual[i] < uavs[i][1]:
             # Se ve si se puede mejorar el tiempo acercandolo a el tiempo preferente para bajar el costo
@@ -47,7 +47,7 @@ def hill_climbing(num_uavs: int, uavs: List[List[int]], t_espera: List[List[int]
                 if tiempos_aterrizaje_actual[orden[n - 1]] + t_espera[orden[n - 1]][i] > uavs[i][2]:
                     fact = "Infactible"
                     nuevo_costo = nuevo_tiempo_aterrizaje - uavs[i][1] * VALOR_INFACTIBLE
-                else: 
+                else:
                     nuevo_costo = nuevo_tiempo_aterrizaje - uavs[i][1]
                 if nuevo_costo < costo_orden[i]:
                     costo_actual += nuevo_costo - costo_orden[i]
@@ -55,7 +55,7 @@ def hill_climbing(num_uavs: int, uavs: List[List[int]], t_espera: List[List[int]
                     tiempos_aterrizaje_actual[i] = nuevo_tiempo_aterrizaje
                     if tiempos_aterrizaje_actual[i] > uavs[i][2]:
                         fact = "Infactible"
-                    else: 
+                    else:
                         fact = "Factible"
             else:
                 nuevo_tiempo_aterrizaje = uavs[i][1]
@@ -70,7 +70,7 @@ def hill_climbing(num_uavs: int, uavs: List[List[int]], t_espera: List[List[int]
 """
 
 # Hill climbing alguna mejora evalua la primera mejora y la aplica
-def hill_climbing(num_uavs: int, uavs: List[Tuple[int, int, int]], t_espera: List[List[int]],costo_actual: int, solucion_anterior: List[int], orden: List[int], costos: List[int]) -> Tuple[int, List[int]]:
+def hill_climbing(num_uavs: int, uavs: List[Tuple[int, int, int]], t_espera: List[List[int]],costo_actual: int, solucion_anterior: List[int], orden: List[int], costos: List[int]) -> Tuple[int, List[int], List[int], Literal['Factible', 'Infactible']]:
     tiempos_aterrizaje_actual = copy.deepcopy(solucion_anterior)
     costo_orden = copy.deepcopy(costos)
     boolean = True
@@ -119,7 +119,7 @@ def hill_climbing(num_uavs: int, uavs: List[Tuple[int, int, int]], t_espera: Lis
                     if tiempos_aterrizaje_actual[orden[n - 1]] + t_espera[orden[n - 1]][i] > uavs[i][2]:
                         fact = "Infactible"
                         nuevo_costo = (nuevo_tiempo_aterrizaje - uavs[i][1]) * VALOR_INFACTIBLE
-                    else: 
+                    else:
                         nuevo_costo = nuevo_tiempo_aterrizaje - uavs[i][1]
                     if nuevo_costo < costo_orden[i]:
                         costo_actual += nuevo_costo - costo_orden[i]
@@ -127,7 +127,7 @@ def hill_climbing(num_uavs: int, uavs: List[Tuple[int, int, int]], t_espera: Lis
                         tiempos_aterrizaje_actual[i] = nuevo_tiempo_aterrizaje
                         if tiempos_aterrizaje_actual[i] > uavs[i][2]:
                             fact = "Infactible"
-                        else: 
+                        else:
                             fact = "Factible"
                 else:
                     nuevo_tiempo_aterrizaje = uavs[i][1]
@@ -147,11 +147,14 @@ def hill_climbing(num_uavs: int, uavs: List[Tuple[int, int, int]], t_espera: Lis
     return costo_actual, tiempos_aterrizaje_actual, costo_orden, fact
 
 # Hill climbing mejor mejora evalua la mejor mejora a hacer y la aplica, cuando ya no hayan mejoras termina
-def hill_climbing_mejor(num_uavs: int, uavs: List[Tuple[int, int, int]], t_espera: List[List[int]],costo_actual: int, solucion_anterior: List[int], orden: List[int], costos: List[int]) -> Tuple[int, List[int]]:
+def hill_climbing_mejor(num_uavs: int, uavs: List[Tuple[int, int, int]], t_espera: List[List[int]],costo_actual: int, solucion_anterior: List[int], orden: List[int], costos: List[int]) -> Tuple[int, List[int], List[int], Literal['Factible', 'Infactible']]:
     tiempos_aterrizaje_actual = copy.deepcopy(solucion_anterior)
     costo_orden = copy.deepcopy(costos)
     boolean = True
     fact = "Factible"
+    UAV_mejor = 0
+    costo_mejor = 0
+    nuevo_aterrizaje_mejor = 0
     while(boolean):
         Mas_mejora = 0
         for n, i in enumerate(orden):
@@ -166,7 +169,7 @@ def hill_climbing_mejor(num_uavs: int, uavs: List[Tuple[int, int, int]], t_esper
                             Mas_mejora = mejora
                             UAV_mejor = i
                             costo_mejor = nuevo_costo
-                            nuevo_aterrizaje_mejor = nuevo_tiempo_aterrizaje 
+                            nuevo_aterrizaje_mejor = nuevo_tiempo_aterrizaje
                 elif tiempos_aterrizaje_actual[orden[n + 1]] - t_espera[orden[n]][i] < uavs[i][1]:
                     nuevo_tiempo_aterrizaje = tiempos_aterrizaje_actual[orden[n + 1]] - t_espera[orden[n]][i]
                     nuevo_costo = uavs[i][1] - nuevo_tiempo_aterrizaje
@@ -176,7 +179,7 @@ def hill_climbing_mejor(num_uavs: int, uavs: List[Tuple[int, int, int]], t_esper
                             Mas_mejora = mejora
                             UAV_mejor = i
                             costo_mejor = nuevo_costo
-                            nuevo_aterrizaje_mejor = nuevo_tiempo_aterrizaje 
+                            nuevo_aterrizaje_mejor = nuevo_tiempo_aterrizaje
                 else:
                     nuevo_tiempo_aterrizaje = uavs[i][1]
                     nuevo_costo = 0
@@ -186,7 +189,7 @@ def hill_climbing_mejor(num_uavs: int, uavs: List[Tuple[int, int, int]], t_esper
                             Mas_mejora = mejora
                             UAV_mejor = i
                             costo_mejor = nuevo_costo
-                            nuevo_aterrizaje_mejor = nuevo_tiempo_aterrizaje 
+                            nuevo_aterrizaje_mejor = nuevo_tiempo_aterrizaje
             elif tiempos_aterrizaje_actual[i] > uavs[i][1]:
                 # Se ve si se puede mejorar el tiempo acercandolo a el tiempo preferente para bajar el costo
                 if n <= 0:
@@ -198,7 +201,7 @@ def hill_climbing_mejor(num_uavs: int, uavs: List[Tuple[int, int, int]], t_esper
                             Mas_mejora = mejora
                             UAV_mejor = i
                             costo_mejor = nuevo_costo
-                            nuevo_aterrizaje_mejor = nuevo_tiempo_aterrizaje 
+                            nuevo_aterrizaje_mejor = nuevo_tiempo_aterrizaje
                 elif tiempos_aterrizaje_actual[orden[n - 1]] + t_espera[orden[n - 1]][i] > uavs[i][1] and tiempos_aterrizaje_actual[orden[n - 1]] + t_espera[orden[n - 1]][i] <= uavs[i][2]:
                     nuevo_tiempo_aterrizaje = tiempos_aterrizaje_actual[orden[n - 1]] + t_espera[orden[n - 1]][i]
                     nuevo_costo = nuevo_tiempo_aterrizaje - uavs[i][1]
@@ -208,8 +211,8 @@ def hill_climbing_mejor(num_uavs: int, uavs: List[Tuple[int, int, int]], t_esper
                             Mas_mejora = mejora
                             UAV_mejor = i
                             costo_mejor = nuevo_costo
-                            nuevo_aterrizaje_mejor = nuevo_tiempo_aterrizaje 
-                elif tiempos_aterrizaje_actual[orden[n - 1]] + t_espera[orden[n - 1]][i] > uavs[i][2]: 
+                            nuevo_aterrizaje_mejor = nuevo_tiempo_aterrizaje
+                elif tiempos_aterrizaje_actual[orden[n - 1]] + t_espera[orden[n - 1]][i] > uavs[i][2]:
                     nuevo_tiempo_aterrizaje = tiempos_aterrizaje_actual[orden[n - 1]] + t_espera[orden[n - 1]][i]
                     nuevo_costo = (nuevo_tiempo_aterrizaje - uavs[i][1]) * VALOR_INFACTIBLE
                     mejora = abs(costo_orden[i] - nuevo_costo)
@@ -227,7 +230,7 @@ def hill_climbing_mejor(num_uavs: int, uavs: List[Tuple[int, int, int]], t_esper
                             Mas_mejora = mejora
                             UAV_mejor = i
                             costo_mejor = nuevo_costo
-                            nuevo_aterrizaje_mejor = nuevo_tiempo_aterrizaje 
+                            nuevo_aterrizaje_mejor = nuevo_tiempo_aterrizaje
         # Se hace la modificación al que tiene mayor mejora en el costo
         if Mas_mejora != 0:
             costo_actual += costo_mejor - costo_orden[UAV_mejor]

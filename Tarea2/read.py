@@ -3,6 +3,8 @@ from Greedy import greedy_determinista
 from Greedy import greedy_estocastico
 from Hill_Climbing import hill_climbing
 from Hill_Climbing import hill_climbing_mejor
+from Tabu_Search import tabu_search
+import argparse
 
 def read_file(file_name: str) -> Tuple[int, List[List[int]], List[List[int]]]:
     tiempos_aterrizaje = []
@@ -27,8 +29,12 @@ def read_file(file_name: str) -> Tuple[int, List[List[int]], List[List[int]]]:
 
 
 def main():
-    archivo = 'C:/Users/Ketbome/Desktop/AlgoritmosExactosMetaheuristica/Tarea2/t2_Deimos.txt'
-    #archivo = input("Ingrese el nombre del archivo: ")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("file", help="The file to use the algorithms from")
+    args = parser.parse_args()
+
+    archivo = args.file
+
     num_uavs, uavs, t_espera = read_file(archivo)
 
     while True:    
@@ -129,6 +135,21 @@ def main():
             print()
         print(best_cost_name)
         print(f"Mejor costo obtenido: {best_cost}")
+        print()
+
+        print("Tabu Search - Greedy determinista:")
+        costo_tabu_search, tiempos_aterrizaje_tabu_search, orden_tabu_search, fact= tabu_search(
+            num_uavs, uavs, t_espera, costo_determinista, tiempos_aterrizaje_determinista, orden, orden_costos)
+        
+        print(f"  Costo Total: {costo_tabu_search} {fact}")
+        if opcion == 2 or opcion == 4:
+            print(f"  Costo en la nave i: {orden_tabu_search}")
+        if opcion == 3 or opcion == 4:
+            print(f"  Tiempos de aterrizaje de cada nave i: {tiempos_aterrizaje_tabu_search}")
+        if costo_hill_climbing < best_cost:
+            best_cost = costo_hill_climbing
+            best_cost_name = f"Hill climbing Mejor Mejora en Determinista {fact}"
+        
         print()
 
 if __name__ == '__main__':

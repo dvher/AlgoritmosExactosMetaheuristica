@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Tuple, Literal
 import random
 
 VALOR_INFACTIBLE = 100
@@ -7,7 +7,7 @@ def ordenar_tiempos_preferentes(num_uavs: int, uavs: List[List[int]]) -> List[in
     return sorted(range(num_uavs), key=lambda i: uavs[i][1])
 
 
-def greedy_determinista(num_uavs: int, uavs: List[List[int]], t_espera: List[List[int]]) -> Tuple[int, List[int]]:
+def greedy_determinista(num_uavs: int, uavs: List[List[int]], t_espera: List[List[int]]) -> Tuple[int, List[int], List[int], List[int], Literal['Factible', 'Infactible']]:
     # Ordena los UAV por tiempo preferente
     orden = ordenar_tiempos_preferentes(num_uavs, uavs)
     # Hace un arreglo de 0ros de tamaño num_uavs
@@ -39,7 +39,7 @@ def greedy_determinista(num_uavs: int, uavs: List[List[int]], t_espera: List[Lis
     return costo, tiempos_aterrizaje, orden, orden_costos, fact
 
 
-def greedy_estocastico(num_uavs: int, uavs: List[List[int]], t_espera: List[List[int]], seed: int) -> Tuple[int, List[int]]:
+def greedy_estocastico(num_uavs: int, uavs: List[List[int]], t_espera: List[List[int]], seed: int) -> Tuple[int, List[int], List[int], List[int], Literal['Factible', 'Infactible']]:
     random.seed(seed)
     # Ordena los UAV por tiempo preferente
     orden = ordenar_tiempos_preferentes(num_uavs, uavs)
@@ -54,7 +54,7 @@ def greedy_estocastico(num_uavs: int, uavs: List[List[int]], t_espera: List[List
         # Aca para hacerlo estocastico que elija entre un rango de tiempos desde el que puede aterrizar
         if t_sig_aterrizaje < uavs[i][2]:
             diferencia = uavs[i][2] - t_sig_aterrizaje
-        else: 
+        else:
             tiempo_aterrizaje = t_sig_aterrizaje
             tiempos_aterrizaje[i] = tiempo_aterrizaje
             diferencia = 0
@@ -65,7 +65,7 @@ def greedy_estocastico(num_uavs: int, uavs: List[List[int]], t_espera: List[List
         if diferencia != 0:
             tiempo_aterrizaje = random.choice(rango_tiempo)
             tiempos_aterrizaje[i] = tiempo_aterrizaje
-        else: 
+        else:
             tiempo_aterrizaje = t_sig_aterrizaje
             tiempos_aterrizaje[i] = tiempo_aterrizaje
         if tiempo_aterrizaje < uavs[i][1]:
@@ -81,7 +81,7 @@ def greedy_estocastico(num_uavs: int, uavs: List[List[int]], t_espera: List[List
             costo += (tiempo_aterrizaje - uavs[i][2]) * VALOR_INFACTIBLE
             orden_costos[i] = (tiempo_aterrizaje - uavs[i][2]) * VALOR_INFACTIBLE
             fact = "Infactible"
-            
+
         else:
             costo += 0 #Está en el tiempo preferente
             orden_costos[i] = 0
