@@ -89,6 +89,18 @@ def main():
         if costo_hill_climbing < best_cost:
             best_cost = costo_hill_climbing
             best_cost_name = f"Hill climbing Mejor Mejora en Determinista {fact}"
+
+        print("Tabu Search - Greedy determinista:")
+        costo_tabu_search, tiempos_aterrizaje_tabu_search, orden_tabu_search, fact= tabu_search(
+            num_uavs, uavs, t_espera, costo_determinista, tiempos_aterrizaje_determinista, orden, orden_costos)
+        print(f"  Costo Total: {costo_tabu_search} {fact}")
+        if opcion == 2 or opcion == 4:
+            print(f"  Costo en la nave i: {orden_tabu_search}")
+        if opcion == 3 or opcion == 4:
+            print(f"  Tiempos de aterrizaje de cada nave i: {tiempos_aterrizaje_tabu_search}")
+        if costo_tabu_search < best_cost:
+            best_cost = costo_tabu_search
+            best_cost_name = f"Tabu Search en Determinista"
         
         print()
         for seed in range(5):
@@ -132,24 +144,21 @@ def main():
                 best_cost = costo_hill_climbing_mejor
                 best_cost_name = f"Hill Climbing Mejor Mejora en Estocástico Seed {seed} {fact}"
             
+            print("  Tabu Search - Greedy estocastico:")
+            costo_tabu_search, tiempos_aterrizaje_tabu_search, orden_tabu_search, fact= tabu_search(
+                num_uavs, uavs, t_espera, costo_determinista, tiempos_aterrizaje_determinista, orden, orden_costos)
+            print(f"     Seed {seed} - Costo Total: {costo_tabu_search} {fact}")
+            if opcion == 2 or opcion == 4:
+                print(f"     Seed {seed} - Costo en la nave i: {orden_tabu_search}")
+            if opcion == 3 or opcion == 4:
+                print(f"     Seed {seed} - Tiempos de aterrizaje de cada nave i: {tiempos_aterrizaje_tabu_search}")
+            if costo_tabu_search < best_cost:
+                best_cost = costo_tabu_search
+                best_cost_name = f"Tabu Search en Estocastico Seed {seed}"
+            
             print()
         print(best_cost_name)
         print(f"Mejor costo obtenido: {best_cost}")
-        print()
-
-        print("Tabu Search - Greedy determinista:")
-        costo_tabu_search, tiempos_aterrizaje_tabu_search, orden_tabu_search, fact= tabu_search(
-            num_uavs, uavs, t_espera, costo_determinista, tiempos_aterrizaje_determinista, orden, orden_costos)
-        
-        print(f"  Costo Total: {costo_tabu_search} {fact}")
-        if opcion == 2 or opcion == 4:
-            print(f"  Costo en la nave i: {orden_tabu_search}")
-        if opcion == 3 or opcion == 4:
-            print(f"  Tiempos de aterrizaje de cada nave i: {tiempos_aterrizaje_tabu_search}")
-        if costo_hill_climbing < best_cost:
-            best_cost = costo_hill_climbing
-            best_cost_name = f"Hill climbing Mejor Mejora en Determinista {fact}"
-        
         print()
 
 if __name__ == '__main__':
