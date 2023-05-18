@@ -70,7 +70,7 @@ def hill_climbing(num_uavs: int, uavs: List[List[int]], t_espera: List[List[int]
 """
 
 # Hill climbing alguna mejora evalua la primera mejora y la aplica
-def hill_climbing(num_uavs: int, uavs: List[Tuple[int, int, int]], t_espera: List[List[int]],costo_actual: int, solucion_anterior: List[int], orden: List[int], costos: List[int]) -> Tuple[int, List[int], List[int], Literal['Factible', 'Infactible']]:
+def hill_climbing(num_uavs: int, uavs: List[List[int]], t_espera: List[List[int]],costo_actual: int, solucion_anterior: List[int], orden: List[int], costos: List[int]) -> Tuple[int, List[int], List[int], Literal['Factible', 'Infactible']]:
     tiempos_aterrizaje_actual = copy.deepcopy(solucion_anterior)
     costo_orden = copy.deepcopy(costos)
     boolean = True
@@ -147,7 +147,7 @@ def hill_climbing(num_uavs: int, uavs: List[Tuple[int, int, int]], t_espera: Lis
     return costo_actual, tiempos_aterrizaje_actual, costo_orden, fact
 
 # Hill climbing mejor mejora evalua la mejor mejora a hacer y la aplica, cuando ya no hayan mejoras termina
-def hill_climbing_mejor(num_uavs: int, uavs: List[Tuple[int, int, int]], t_espera: List[List[int]],costo_actual: int, solucion_anterior: List[int], orden: List[int], costos: List[int]) -> Tuple[int, List[int], List[int], Literal['Factible', 'Infactible']]:
+def hill_climbing_mejor(num_uavs: int, uavs: List[List[int]], t_espera: List[List[int]],costo_actual: int, solucion_anterior: List[int], orden: List[int], costos: List[int]) -> Tuple[int, List[int], List[int], Literal['Factible', 'Infactible']]:
     tiempos_aterrizaje_actual = copy.deepcopy(solucion_anterior)
     costo_orden = copy.deepcopy(costos)
     boolean = True

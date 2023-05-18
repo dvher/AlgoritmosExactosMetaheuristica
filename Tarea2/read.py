@@ -37,22 +37,22 @@ def main():
 
     num_uavs, uavs, t_espera = read_file(archivo)
 
-    while True:    
+    while True:
         print("Seleccione la información que desea ver:")
         print("1. Solo los Costos")
         print("2. Costo en la nave i")
         print("3. Tiempos de aterrizaje de cada nave i")
         print("4. Todos")
         print("0. Salir")
-        
+
         opcion = int(input("Ingrese el número de opción: "))
-        
+
         if opcion == 0:
             break
 
         costo_determinista, tiempos_aterrizaje_determinista, orden, orden_costos, fact = greedy_determinista(
             num_uavs, uavs, t_espera)
-        
+
         print(f"Archivo: {archivo}")
 
         print(f"Greedy Determinista - Costo Total: {costo_determinista} {fact}")
@@ -63,11 +63,11 @@ def main():
 
         best_cost = costo_determinista
         best_cost_name = f"Greedy Determinista {fact}"
-        
+
         print("Hill Climbing - Greedy determinista:")
         costo_hill_climbing, tiempos_aterrizaje_hill_climbing, orden_costos_hill, fact = hill_climbing(
             num_uavs, uavs, t_espera, costo_determinista, tiempos_aterrizaje_determinista, orden, orden_costos)
-        
+
         print(f"  Costo Total: {costo_hill_climbing} {fact}")
         if opcion == 2 or opcion == 4:
             print(f"  Costo en la nave i: {orden_costos_hill}")
@@ -76,11 +76,11 @@ def main():
         if costo_hill_climbing < best_cost:
             best_cost = costo_hill_climbing
             best_cost_name = f"Hill climbing Alguna Mejora en Determinista {fact}"
-        
+
         print("Hill Climbing Mejor Mejora - Greedy determinista:")
         costo_hill_climbing, tiempos_aterrizaje_hill_climbing, orden_costos_hill_mejor, fact= hill_climbing_mejor(
             num_uavs, uavs, t_espera, costo_determinista, tiempos_aterrizaje_determinista, orden, orden_costos)
-        
+
         print(f"  Costo Total: {costo_hill_climbing} {fact}")
         if opcion == 2 or opcion == 4:
             print(f"  Costo en la nave i: {orden_costos_hill_mejor}")
@@ -101,13 +101,13 @@ def main():
         if costo_tabu_search < best_cost:
             best_cost = costo_tabu_search
             best_cost_name = f"Tabu Search en Determinista"
-        
+
         print()
         for seed in range(5):
             print(f"Greedy Estocástico seed {seed}:")
             costo_estocastico, tiempos_aterrizaje_estocastico, orden, orden_costos, fact = greedy_estocastico(
                 num_uavs, uavs, t_espera, seed)
-            
+
             print(f"  Seed {seed} - Costo Total: {costo_estocastico} {fact}")
             if opcion == 2 or opcion == 4:
                 print(f"  Seed {seed} - Costo en la nave i: {orden_costos}")
@@ -116,11 +116,11 @@ def main():
             if costo_estocastico < best_cost:
                 best_cost = costo_estocastico
                 best_cost_name = f"Greedy Estocástico Seed {seed} {fact}"
-            
+
             print(f"  Hill Climbing - Greedy estocastico:")
             costo_hill_climbing, tiempos_aterrizaje_hill_climbing, orden_costos_hill, fact = hill_climbing(
                 num_uavs, uavs, t_espera, costo_estocastico, tiempos_aterrizaje_estocastico, orden, orden_costos)
-            
+
             print(f"     Seed {seed} - Costo Total: {costo_hill_climbing} {fact}")
             if opcion == 2 or opcion == 4:
                 print(f"     Seed {seed} - Costo en la nave i: {orden_costos_hill}")
@@ -129,11 +129,11 @@ def main():
             if costo_hill_climbing < best_cost:
                 best_cost = costo_hill_climbing
                 best_cost_name = f"Hill Climbing Alguna Mejora en Estocástico Seed {seed} {fact}"
-            
+
             print(f"  Hill Climbing Mejor Mejora - Greedy estocastico:")
             costo_hill_climbing_mejor, tiempos_aterrizaje_hill_climbing_mejor, orden_costos_hill_mejor, fact = hill_climbing_mejor(
                 num_uavs, uavs, t_espera, costo_estocastico, tiempos_aterrizaje_estocastico, orden, orden_costos)
-            
+
             if opcion == 1:
                 print(f"     Seed {seed} - Costo Total: {costo_hill_climbing_mejor} {fact}")
             if opcion == 2 or opcion == 4:
@@ -143,7 +143,7 @@ def main():
             if costo_hill_climbing_mejor < best_cost:
                 best_cost = costo_hill_climbing_mejor
                 best_cost_name = f"Hill Climbing Mejor Mejora en Estocástico Seed {seed} {fact}"
-            
+
             print("  Tabu Search - Greedy estocastico:")
             costo_tabu_search, tiempos_aterrizaje_tabu_search, orden_tabu_search, fact= tabu_search(
                 num_uavs, uavs, t_espera, costo_determinista, tiempos_aterrizaje_determinista, orden, orden_costos)
@@ -155,7 +155,7 @@ def main():
             if costo_tabu_search < best_cost:
                 best_cost = costo_tabu_search
                 best_cost_name = f"Tabu Search en Estocastico Seed {seed}"
-            
+
             print()
         print(best_cost_name)
         print(f"Mejor costo obtenido: {best_cost}")
