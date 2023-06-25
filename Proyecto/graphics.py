@@ -1,23 +1,26 @@
 import pygame
+from constants import MATRIX_WALL, MATRIX_START, MATRIX_END
+from typing import List, Tuple
 
-# TODO: Hacer el tamaño de los cuadrados dinámicos
-# TODO: Hacer un objeto que contenga el color según el valor de la matriz
+COLOR_SQUARE = (255, 255, 255)
+COLOR_WALL = (23, 23, 23)
+COLOR_PLAYER = (19, 56, 190)
+COLOR_TRAIL = (128, 128, 128)
+COLOR_END = (178, 32, 32)
 
-# Valores posibles de la matriz, cualquier valor fuera de este se considerará un cuadrado vacío
-MATRIX_EMPTY = 0
-MATRIX_PLAYER = 1
-MATRIX_WALL = 2
-MATRIX_TRAIL = 3
+SCREEN_SIZE = (600, 600)
 
-COLOR_GRID = (255, 255, 255)  # White color for grid lines
-COLOR_SQUARE = (0, 0, 255)  # Blue color for squares
-COLOR_PLAYER = (255, 0, 0)  # Red color for player
-COLOR_TRAIL = (0, 255, 0)   # Green color for trail
+PATH_SPEED = 500
 
-def graph_path(matrix):
+finish = False
+
+def graph_path(matrix: List[List[int]], path: List[Tuple[int, int]], caption: str = "Ruta", path_speed: int = PATH_SPEED):
+
+    global finish
+
     # Define el tamaño de cada cuadrado
-    square_size = 50
-    margin = 5
+    square_size = SCREEN_SIZE[0] // len(matrix[0])
+    margin = SCREEN_SIZE[0] // 100
 
     # Calcular el alto y ancho para la pantalla
     num_rows = len(matrix)
@@ -25,20 +28,25 @@ def graph_path(matrix):
     grid_width = num_cols * (square_size + margin) + margin
     grid_height = num_rows * (square_size + margin) + margin
 
+    player_pos = (0, 0)
+
     pygame.init()
 
     window = pygame.display.set_mode((grid_width, grid_height))
-    pygame.display.set_caption("Ruta más corta")
+    pygame.display.set_caption(caption)
 
     running = True
     while running:
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
 
+        if finish:
+            continue
+
         # Llenar la pantalla negra
         window.fill((0, 0, 0))
-
         # Dibujar el grid
         for row in range(num_rows):
             for col in range(num_cols):
@@ -47,11 +55,12 @@ def graph_path(matrix):
 
                 # Cambia el color del cuadrado según el valor de la matriz
                 if matrix[row][col] == MATRIX_WALL:
-                    color = COLOR_GRID
-                elif matrix[row][col] == MATRIX_PLAYER:
+                    color = COLOR_WALL
+                elif matrix[row][col] == MATRIX_START:
+                    player_pos = (row, col)
                     color = COLOR_PLAYER
-                elif matrix[row][col] == MATRIX_TRAIL:
-                    color = COLOR_TRAIL
+                elif matrix[row][col] == MATRIX_END:
+                    color = COLOR_END
                 else:
                     color = COLOR_SQUARE
 
@@ -60,6 +69,31 @@ def graph_path(matrix):
 
         # Actualizar la imagen
         pygame.display.flip()
+
+        for coord in path:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    return
+            pygame.time.wait(path_speed)
+            row1, col1 = player_pos
+            x1 = col1 * (square_size + margin) + margin
+            y1 = row1 * (square_size + margin) + margin
+            
+            row2, col2 = coord
+            x2 = col2 * (square_size + margin) + margin
+            y2 = row2 * (square_size + margin) + margin
+
+            # Dibujar el cuadrado que corresponda
+            pygame.draw.rect(window, COLOR_TRAIL, (x1, y1, square_size, square_size))
+            pygame.draw.rect(window, COLOR_PLAYER, (x2, y2, square_size, square_size))
+
+            player_pos = coord
+
+            # Actualizar la imagen
+            pygame.display.flip()
+        else:
+            finish = True
 
     # Salir
     pygame.quit()
