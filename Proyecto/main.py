@@ -11,6 +11,8 @@ argparser.add_argument("-f", "--file", help="Archivo de entrada", required=True)
 
 args = argparser.parse_args()
 
+PATH_SPEED=50
+
 def get_matrix(filename):
     with open(filename, 'r', encoding="utf-8") as f:
         lines = [line.strip() for line in f.readlines()]
@@ -33,12 +35,105 @@ def get_matrix(filename):
 
     return matrix, start, end
 
+def run_astar(matrix, start, end, filename):
+
+    start_time = perf_counter()
+    # Buscar el camino más corto
+    path, cost = astar(matrix, start, end)
+    end_time = perf_counter()
+
+    pygame.init()
+
+    # Define el tamaño de cada cuadrado
+    square_size = SCREEN_SIZE[0] // len(matrix[0])
+    margin = SCREEN_SIZE[0] // 100
+
+    # Calcular el alto y ancho para la pantalla
+    num_rows = len(matrix)
+    num_cols = len(matrix[0])
+    grid_width = num_cols * (square_size + margin) + margin
+    grid_height = num_rows * (square_size + margin) + margin
+
+    window = pygame.display.set_mode((grid_width, grid_height))
+    pygame.display.set_caption(f"Ruta: {filename}")
+
+    # Marcar el camino en la matriz
+    graph_path(matrix, path, window, path_speed=PATH_SPEED)
+
+    pygame.time.wait(1000)
+
+    pygame.quit()
+
+    return cost, end_time - start_time
+
+def run_aco(matrix, start, end, filename):
+
+    # Run ACO algorithm
+    num_ants = 10
+    evaporation = 1
+    alpha = 0.7
+    beta = 1.5
+    iterations = 200
+    start_time = perf_counter()
+    path_aco, cost_aco = aco(matrix, start, end, num_ants, evaporation, alpha, beta, iterations)
+    end_time = perf_counter()
+
+    pygame.init()
+
+    # Define el tamaño de cada cuadrado
+    square_size = SCREEN_SIZE[0] // len(matrix[0])
+    margin = SCREEN_SIZE[0] // 100
+
+    # Calcular el alto y ancho para la pantalla
+    num_rows = len(matrix)
+    num_cols = len(matrix[0])
+    grid_width = num_cols * (square_size + margin) + margin
+    grid_height = num_rows * (square_size + margin) + margin
+
+    window = pygame.display.set_mode((grid_width, grid_height))
+    pygame.display.set_caption(f"Ruta: {filename}")
+
+    # Marcar el camino en la matriz
+    graph_path(matrix, path_aco, window, path_speed=PATH_SPEED)
+
+    pygame.time.wait(1000)
+
+    pygame.quit()
+
+    return cost_aco, end_time - start_time
+
 
 def main():
 
     filename = args.file
 
     matrix, start, end = get_matrix(filename)
+
+    opcion = 0
+
+    print("Seleccione el algoritmo a utilizar:")
+    print("1. A*")
+    print("2. ACO")
+    print("3. Ambos")
+    print("4. Salir")
+
+    while opcion not in [1, 2, 3, 4]:
+        opcion = int(input("Opción: "))
+
+    if opcion == 1:
+        cost, time = run_astar(matrix, start, end, filename)
+        print(f"Tiempo de ejecución A*: {time} s")
+        print(f"Costo del camino: {cost}")
+        return
+    
+    if opcion == 2:
+        cost, time = run_aco(matrix, start, end, filename)
+        print(f"Tiempo de ejecución ACO: {time} s")
+        print(f"Costo del camino: {cost}")
+        return
+    
+    if opcion == 4:
+        return
 
     astar_start = perf_counter()
     # Buscar el camino más corto
@@ -77,11 +172,11 @@ def main():
     pygame.display.set_caption(f"Ruta: {filename} ACO vs A*")
 
     # Marcar el camino en la matriz
-    graph_path(matrix, path_aco, window, path_speed=50)
+    graph_path(matrix, path_aco, window, path_speed=PATH_SPEED)
 
     pygame.time.wait(1000)
 
-    graph_path(matrix, path, window, path_speed=50)
+    graph_path(matrix, path, window, path_speed=PATH_SPEED)
 
     pygame.time.wait(1000)
 
