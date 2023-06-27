@@ -27,6 +27,7 @@ def astar(matrix: List[List[int]], start: Tuple[int, int], end: Tuple[int, int])
     parent = {}
     g_score = {start: 0}
     f_score = {start: heuristic(start)}
+    paths = {start: [start]}
 
     queue = PriorityQueue()
     queue.put((f_score[start], start))
@@ -37,10 +38,15 @@ def astar(matrix: List[List[int]], start: Tuple[int, int], end: Tuple[int, int])
 
         if current == end:
             path = []
-            while current in parent:
-                path.append(current)
-                current = parent[current]
-            return path[::-1]
+            for x in paths:
+                if x == end:
+                    continue
+                for y in paths[x]:
+                    if y not in path:
+                        path.append(y)
+
+            path.append(end)
+            return path, len(path)
         
         visited.add(current)
 
@@ -54,6 +60,7 @@ def astar(matrix: List[List[int]], start: Tuple[int, int], end: Tuple[int, int])
                 parent[neighbour] = current
                 g_score[neighbour] = tentative_g_score
                 f_score[neighbour] = tentative_g_score + heuristic(neighbour)
+                paths[neighbour] = paths[current] + [neighbour]
                 queue.put((f_score[neighbour], neighbour))
 
-    return []
+    return [], 0

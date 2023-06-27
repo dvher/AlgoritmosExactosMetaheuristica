@@ -1,5 +1,5 @@
 import pygame
-from constants import MATRIX_WALL, MATRIX_START, MATRIX_END
+from constants import MATRIX_WALL, MATRIX_START, MATRIX_END, SCREEN_SIZE
 from typing import List, Tuple
 
 COLOR_SQUARE = (255, 255, 255)
@@ -8,15 +8,11 @@ COLOR_PLAYER = (19, 56, 190)
 COLOR_TRAIL = (128, 128, 128)
 COLOR_END = (178, 32, 32)
 
-SCREEN_SIZE = (600, 600)
-
 PATH_SPEED = 500
 
-finish = False
+def graph_path(matrix: List[List[int]], path: List[Tuple[int, int]], window: pygame.Surface, path_speed: int = PATH_SPEED):
 
-def graph_path(matrix: List[List[int]], path: List[Tuple[int, int]], caption: str = "Ruta", path_speed: int = PATH_SPEED):
-
-    global finish
+    finish = False
 
     # Define el tamaño de cada cuadrado
     square_size = SCREEN_SIZE[0] // len(matrix[0])
@@ -25,15 +21,8 @@ def graph_path(matrix: List[List[int]], path: List[Tuple[int, int]], caption: st
     # Calcular el alto y ancho para la pantalla
     num_rows = len(matrix)
     num_cols = len(matrix[0])
-    grid_width = num_cols * (square_size + margin) + margin
-    grid_height = num_rows * (square_size + margin) + margin
 
     player_pos = (0, 0)
-
-    pygame.init()
-
-    window = pygame.display.set_mode((grid_width, grid_height))
-    pygame.display.set_caption(caption)
 
     running = True
     while running:
@@ -43,7 +32,7 @@ def graph_path(matrix: List[List[int]], path: List[Tuple[int, int]], caption: st
                 running = False
 
         if finish:
-            continue
+            return
 
         # Llenar la pantalla negra
         window.fill((0, 0, 0))
@@ -95,5 +84,3 @@ def graph_path(matrix: List[List[int]], path: List[Tuple[int, int]], caption: st
         else:
             finish = True
 
-    # Salir
-    pygame.quit()

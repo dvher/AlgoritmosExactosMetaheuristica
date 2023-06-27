@@ -1,10 +1,6 @@
 from typing import List, Tuple
 from random import random
-import argparse
-from time import perf_counter_ns
-
-from graphics import graph_path
-from constants import MATRIX_START, MATRIX_END, MATRIX_WALL
+from constants import MATRIX_WALL
 
 
 class Ant:
@@ -90,58 +86,3 @@ def aco(matrix: List[List[int]], start: Tuple[int, int], end: Tuple[int, int], n
             pheromone_matrix[next_pos[0]][next_pos[1]] += (1.0 / best_distance)
 
     return best_path, best_distance
-
-
-def get_matrix(filename):
-    with open(filename, 'r', encoding="utf-8") as f:
-        lines = [line.strip() for line in f.readlines()]
-
-    matrix = [list(map(int, line.split())) for line in lines]
-
-    start = (0, 0)
-    end = (0, 0)
-
-    # Search for the start and end nodes
-    for i, row in enumerate(matrix):
-        for j, col in enumerate(row):
-            if col == MATRIX_START:
-                start = (i, j)
-            elif col == MATRIX_END:
-                end = (i, j)
-
-    if start == end == (0, 0):
-        raise Exception("Start or end node not found")
-
-    return matrix, start, end
-
-
-argparser = argparse.ArgumentParser()
-argparser.add_argument("-f", "--file", help="Input file", required=True)
-
-args = argparser.parse_args()
-
-
-def main():
-    filename = args.file
-
-    matrix, start, end = get_matrix(filename)
-
-    aco_start = perf_counter_ns()
-    # Run ACO algorithm
-    num_ants = 10
-    evaporation = 1
-    alpha = 0.7
-    beta = 1.5
-    iterations = 200
-    path_aco, cost_aco = aco(matrix, start, end, num_ants, evaporation, alpha, beta, iterations)
-    aco_end = perf_counter_ns()
-
-    # Mark the ACO path on the matrix
-    graph_path(matrix, path_aco, caption=f"ACO Path: {filename}", path_speed=50)
-
-    print(f"ACO Execution Time: {aco_end - aco_start} ns")
-    print(f"Cost of the best path: {cost_aco}")
-
-
-if __name__ == "__main__":
-    main()

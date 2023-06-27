@@ -1,8 +1,10 @@
 from graphics import graph_path
 from astar import astar
-from constants import MATRIX_START, MATRIX_END
+from aco import aco
+from constants import MATRIX_START, MATRIX_END, SCREEN_SIZE
 import argparse
-from time import perf_counter_ns
+from time import perf_counter
+import pygame
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument("-f", "--file", help="Archivo de entrada", required=True)
@@ -38,15 +40,52 @@ def main():
 
     matrix, start, end = get_matrix(filename)
 
-    astar_start = perf_counter_ns()
+    astar_start = perf_counter()
     # Buscar el camino más corto
-    path = astar(matrix, start, end)
-    astar_end = perf_counter_ns()
+    path, cost = astar(matrix, start, end)
+    astar_end = perf_counter()
+
+    # Run ACO algorithm
+    num_ants = 10
+    evaporation = 1
+    alpha = 0.7
+    beta = 1.5
+    iterations = 200
+    aco_start = perf_counter()
+    path_aco, cost_aco = aco(matrix, start, end, num_ants, evaporation, alpha, beta, iterations)
+    aco_end = perf_counter()
+
+    print(f"Tiempo de ejecución ACO: {aco_end - aco_start} s")
+    print(f"Costo del camino: {cost_aco}")
+
+    print(f"Tiempo de ejecución A*: {astar_end - astar_start} s")
+    print(f"Costo del camino: {cost}")
+
+    pygame.init()
+
+    # Define el tamaño de cada cuadrado
+    square_size = SCREEN_SIZE[0] // len(matrix[0])
+    margin = SCREEN_SIZE[0] // 100
+
+    # Calcular el alto y ancho para la pantalla
+    num_rows = len(matrix)
+    num_cols = len(matrix[0])
+    grid_width = num_cols * (square_size + margin) + margin
+    grid_height = num_rows * (square_size + margin) + margin
+
+    window = pygame.display.set_mode((grid_width, grid_height))
+    pygame.display.set_caption(f"Ruta: {filename} ACO vs A*")
 
     # Marcar el camino en la matriz
-    graph_path(matrix, path, caption=f"Ruta: {filename} A*", path_speed=50)
+    graph_path(matrix, path_aco, window, path_speed=50)
 
-    print(f"Tiempo de ejecución A*: {astar_end - astar_start} ns")
+    pygame.time.wait(1000)
+
+    graph_path(matrix, path, window, path_speed=50)
+
+    pygame.time.wait(1000)
+
+    pygame.quit()
 
 if __name__ == "__main__":
     main()
