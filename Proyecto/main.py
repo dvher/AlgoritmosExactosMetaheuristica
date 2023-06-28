@@ -60,7 +60,7 @@ def run_astar(matrix, start, end, filename):
     # Marcar el camino en la matriz
     graph_path(matrix, path, window, path_speed=PATH_SPEED)
 
-    pygame.time.wait(1000)
+    pygame.time.wait(3000)
 
     pygame.quit()
 
@@ -96,7 +96,7 @@ def run_aco(matrix, start, end, filename):
     # Marcar el camino en la matriz
     graph_path(matrix, path_aco, window, path_speed=PATH_SPEED)
 
-    pygame.time.wait(1000)
+    pygame.time.wait(3000)
 
     pygame.quit()
 
@@ -141,11 +141,11 @@ def main():
     astar_end = perf_counter()
 
     # Run ACO algorithm
-    num_ants = 10
+    num_ants = 2
     evaporation = 1
     alpha = 0.7
     beta = 1.5
-    iterations = 200
+    iterations = 2
     aco_start = perf_counter()
     path_aco, cost_aco = aco(matrix, start, end, num_ants, evaporation, alpha, beta, iterations)
     aco_end = perf_counter()
@@ -178,7 +178,7 @@ def main():
 
     graph_path(matrix, path, window, path_speed=PATH_SPEED)
 
-    pygame.time.wait(1000)
+    pygame.time.wait(3000)
 
     pygame.quit()
 
