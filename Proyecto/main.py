@@ -62,6 +62,8 @@ def run_astar(matrix, start, end, filename):
 
     pygame.time.wait(3000)
 
+    pygame.image.save(window, f'Aº_{filename[:-4]}.jpg')
+
     pygame.quit()
 
     return cost, end_time - start_time
@@ -98,10 +100,29 @@ def run_aco(matrix, start, end, filename):
 
     pygame.time.wait(3000)
 
+    pygame.image.save(window, f'ACO_{filename[:-4]}.jpg')
     pygame.quit()
 
     return cost_aco, end_time - start_time
 
+def show_puzzle(matrix, filename):
+    square_size = SCREEN_SIZE[0] // len(matrix[0])
+    margin = SCREEN_SIZE[0] // 100
+
+    num_rows = len(matrix)
+    num_cols = len(matrix[0])
+    grid_width = num_cols * (square_size + margin) + margin
+    grid_height = num_rows * (square_size + margin) + margin
+    pygame.init()
+    window = pygame.display.set_mode((grid_width, grid_height))
+    pygame.display.set_caption('Puzzle')
+
+    graph_path(matrix, [], window, path_speed=PATH_SPEED)
+
+    pygame.time.wait(3000)
+
+    pygame.image.save(window, f'{filename[:-4]}.jpg')
+    pygame.quit()
 
 def main():
 
@@ -115,9 +136,10 @@ def main():
     print("1. A*")
     print("2. ACO")
     print("3. Ambos")
-    print("4. Salir")
+    print("4. Ver puzzle")
+    print("5. Salir")
 
-    while opcion not in [1, 2, 3, 4]:
+    while opcion not in [1, 2, 3, 4, 5]:
         opcion = int(input("Opción: "))
 
     if opcion == 1:
@@ -131,8 +153,12 @@ def main():
         print(f"Tiempo de ejecución ACO: {time} s")
         print(f"Costo del camino: {cost}")
         return
-    
+
     if opcion == 4:
+        show_puzzle(matrix, filename)
+        return
+    
+    if opcion == 5:
         return
 
     astar_start = perf_counter()

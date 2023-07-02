@@ -48,7 +48,7 @@ def get_neighbours(matrix: List[List[int]], pos: Tuple[int, int]) -> List[Tuple[
 
 
 def aco(matrix: List[List[int]], start: Tuple[int, int], end: Tuple[int, int], num_ants: int, evaporation: float,
-        alpha: float, beta: float, iterations: int) -> List[Tuple[int, int]]:
+        alpha: float, beta: float, iterations: int) -> Tuple[List[Tuple[int, int]], float | int]:
     num_rows = len(matrix)
     num_cols = len(matrix[0]) if num_rows else 0
 

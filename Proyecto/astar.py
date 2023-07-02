@@ -19,7 +19,7 @@ def manhattan_distance(start, end):
     dy = abs(start[1] - end[1])
     return max(dx, dy)
 
-def astar(matrix: List[List[int]], start: Tuple[int, int], end: Tuple[int, int]) -> List[Tuple[int, int]]:
+def astar(matrix: List[List[int]], start: Tuple[int, int], end: Tuple[int, int]) -> Tuple[List[Tuple[int, int]], float | int]:
 
     heuristic = lambda pos: manhattan_distance(pos, end)
 
